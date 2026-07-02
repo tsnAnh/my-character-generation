@@ -2,6 +2,8 @@
 
 Public-ready Codex skills for character art analysis and reference-conditioned character generation.
 
+GitHub: https://github.com/tsnAnh/my-character-generation
+
 This repository packages two related skills:
 
 - `analyze-art-drawing`: analyzes illustration technique, medium feel, linework, eye rendering, hair construction, color handling, polish level, and style-transfer constraints.
@@ -20,6 +22,8 @@ These skills are designed as a small workflow:
 Clone the repo, then run:
 
 ```bash
+git clone https://github.com/tsnAnh/my-character-generation.git
+cd my-character-generation
 ./scripts/install.sh
 ```
 
@@ -30,6 +34,13 @@ ${CODEX_HOME:-$HOME/.codex}/skills
 ```
 
 Restart Codex after installing so the skills are discovered.
+
+Install a single skill by passing its folder name:
+
+```bash
+./scripts/install.sh analyze-art-drawing
+./scripts/install.sh generate-character-from-reference
+```
 
 ## Manual Install
 
@@ -59,13 +70,30 @@ Prompt-only mode:
 Use $generate-character-from-reference in prompt-only mode. Return the reference visual grammar, filtered character appearance, final image prompt, negative prompt, and QC checklist.
 ```
 
+## Skill Compliance
+
+The skill folders follow the Codex skill anatomy:
+
+- Each skill folder is named exactly after its `name` field.
+- Each skill has a required `SKILL.md` with only `name` and `description` in YAML frontmatter.
+- UI metadata lives in `agents/openai.yaml`.
+- Long procedural detail lives in `references/` and is loaded by the skill only when needed.
+- No extra README, changelog, install guide, or quick-reference files live inside individual skill folders.
+
+Run the repo validator before publishing changes:
+
+```bash
+./scripts/validate_skills.py
+```
+
 ## Repository Layout
 
 ```text
 .
 ├── README.md
 ├── scripts/
-│   └── install.sh
+│   ├── install.sh
+│   └── validate_skills.py
 └── skills/
     ├── analyze-art-drawing/
     │   ├── SKILL.md
@@ -77,20 +105,15 @@ Use $generate-character-from-reference in prompt-only mode. Return the reference
         └── references/generation-policy.md
 ```
 
-## Publishing To GitHub
+## Updating The Public Repo
 
-After committing locally, create a public GitHub repository and push:
-
-```bash
-git branch -M main
-git remote add origin git@github.com:<your-user>/<repo-name>.git
-git push -u origin main
-```
-
-Or with GitHub CLI:
+After editing a skill, validate, commit, and push:
 
 ```bash
-gh repo create <repo-name> --public --source=. --remote=origin --push
+./scripts/validate_skills.py
+git add README.md scripts skills
+git commit -m "Update character art skills"
+git push
 ```
 
 ## License
