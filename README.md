@@ -101,7 +101,7 @@ Use recast-character-in-reference with this image and my character prompt. Keep 
 Patch for mobile app portrait framing:
 
 ```text
-Use recast-character-in-reference in Mobile portrait mode with this image and my character prompt. Force 9:16. Keep the face/focal center app-safe below the header area, not too high or too low. If the recast output is badly placed, correct the framing while preserving the patched character and source style.
+Use recast-character-in-reference in Mobile portrait mode with this image and my character prompt.
 ```
 
 Use `recast-character-in-reference` instead of `generate-character-from-reference` when the source image should stay structurally intact and the task is closer to "change this character into my OC" than "make a new image in this style."
@@ -118,9 +118,6 @@ Keep the original pose, face construction, expression, hand placement, crop, lin
 Important background rule:
 Treat flowers, leaves, vines, props, scenery, and other source-only decoration as background/decor content. They are not character structure locks. Replace or remove them if they do not match my character prompt, while keeping the source background's softness, lighting, and detail density.
 
-Framing mode:
-Source-crop mode. Preserve the original crop feeling.
-
 Character prompt:
 Name: Mira Veyl
 Eyes: glossy violet-blue eyes with tiny star-shaped highlights
@@ -132,11 +129,10 @@ Accessories: moonstone hair clips, pearl earrings, thin silver choker with a tin
 Background: cozy balcony nook above a dreamy twilight city, compressed into one or two faint cues
 ```
 
-For Mobile portrait output, change the framing line to:
+If you want a mobile portrait, say this in the first line instead:
 
 ```text
-Framing mode:
-Mobile portrait mode. Force 9:16 and keep the face/focal center app-safe below the likely header area.
+Use recast-character-in-reference in Mobile portrait mode with the attached image as the edit target / structure lock.
 ```
 
 For prompt-only output instead of direct generation, add:
