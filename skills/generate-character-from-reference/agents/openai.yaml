@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reference Character Generator"
+  short_description: "Generate 9:16 reference-faithful character art"
+  default_prompt: "Use $generate-character-from-reference with a reference image and character description to generate a 9:16 mobile portrait that preserves character traits while matching the reference pose, eye and hair rendering, medium, polish level, and style."

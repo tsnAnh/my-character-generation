@@ -1,0 +1,4 @@
+interface:
+  display_name: "Art Drawing Analyst"
+  short_description: "Analyze art style, technique, and polish"
+  default_prompt: "Use $analyze-art-drawing to analyze this artwork's linework, eye and hair rendering, color handling, materials, imperfections, polish level, and drawing technique in professional detail."
