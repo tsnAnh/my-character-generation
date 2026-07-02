@@ -22,6 +22,10 @@ Do not write prompts as broad character art descriptions. Broad descriptions inv
 Build this map before prompting:
 
 ```text
+Framing mode:
+- Source-crop mode or Mobile portrait mode:
+- App-safe focal placement:
+
 Edit target locks:
 - Pose/crop/camera:
 - Face proportion fingerprint:
@@ -60,6 +64,28 @@ Omit:
 ```
 
 The final edit prompt should use the map, not the raw character sheet.
+
+## Mobile Portrait Mode And App-Safe Focal Placement
+
+Use Mobile portrait mode when the user asks for mobile, app, avatar, phone wallpaper, mobile portrait, 9:16, portrait output, or explicitly says "Mobile portrait mode".
+
+Rules:
+
+- Force final output to 9:16 vertical portrait.
+- Preserve the source pose, hand placement, head angle, expression, face construction, linework, and crop feeling.
+- Reframe by extending, simplifying, or reducing background in the source style; do not stretch the character or invent a new pose.
+- Keep a top header-safe zone. The top 12-16% of the canvas should be background, hair edge, or nonessential atmosphere only.
+- Keep eyes, facial marks, mouth, and key accessories below the likely app header.
+- Keep the face/focal center in an app-safe upper-middle band, roughly 38-50% down from the top of the canvas.
+- Keep the eye line roughly 30-42% down from the top of the canvas when the crop allows.
+- Keep breathing room above the head and below visible hands/outfit cues.
+- Avoid face placement that is too high, too low, too close to the top/bottom edge, or so off-center that app UI would cover the focal point.
+
+Prompt guard:
+
+```text
+Mobile portrait mode: final output must be 9:16 vertical. Preserve the source pose and crop feeling, but reframe with source-style background so the face/focal center sits in the app-safe upper-middle band. Keep the top header-safe zone nonessential; no eyes, facial marks, mouth, or key accessories under the likely app header. Do not place the face too high, too low, or hard against any edge.
+```
 
 ## Replacement Rules
 
@@ -169,6 +195,8 @@ Translate character words like "starlit", "glowing", "moonlight", or "magical" i
 ```text
 Edit the attached image. Treat it as the structure lock and preserve its pose, crop, camera feeling, face proportion fingerprint, facial-feature construction, expression, gaze, hand placement, linework, lighting, rendering method, background style, detail density, and polish ceiling.
 
+Framing mode: <source-crop mode OR Mobile portrait mode>. If Mobile portrait mode is active, force 9:16 vertical output, keep the face/focal center in the app-safe upper-middle band, reserve the top header-safe zone for nonessential background/hair only, and reframe by extending source-style background rather than changing pose or face construction.
+
 Make only these visible replacements:
 - <hair replacement>
 - <eye replacement>
@@ -186,6 +214,18 @@ Glow budget: <concrete cap>.
 Do not redraw the image as a new character illustration. Do not change pose, facial construction, expression, hand placement, crop, linework, lighting, rendering style, or polish level.
 ```
 
+## Placement Correction Pass
+
+If a direct recast output fails Mobile portrait placement, produce one corrected output before finalizing. Treat this as a framing correction, not a new character reroll.
+
+Use this targeted correction:
+
+```text
+Keep the generated character, patched traits, source art style, face construction, expression, hand placement, lighting, linework, and background style unchanged. Correct only the framing: make the canvas 9:16 vertical, move/reframe the face and focal center into the app-safe upper-middle band, keep eyes and facial marks below the likely app header, add source-style background padding where needed, and avoid placing the face too high, too low, or close to any edge.
+```
+
+Do not use a placement correction to alter hair color, eye color, outfit cues, accessories, lighting, glow, or style. If the available image tool cannot edit the existing result, rerun with the same prompt plus the placement correction line.
+
 ## Anti-Redraw Negative Prompt
 
 Avoid:
@@ -201,6 +241,7 @@ Avoid:
 - global glow, aura, bloom haze, sparkle fields, neon rim light, glowy skin fog, or plastic mobile-game polish
 - cleaner, smoother, glossier, more symmetrical, more detailed, or more AI-polished finish than the source
 - mismatched line color, heavier outlines, vector-clean curves, or missing broken/lost contours
+- unsafe mobile framing, face too high, face too low, focal point under a likely app header, cropped eyes, cropped facial mark, or important accessories hidden by header-safe UI
 
 ## Example Translation
 
@@ -213,6 +254,9 @@ Use this manhwa girl image. My character has violet eyes, silver-lavender hair, 
 Patch map:
 
 ```text
+Framing mode:
+- Mobile portrait mode: force 9:16 and keep face/focal center in app-safe upper-middle band.
+
 Replace:
 - brown/black hair -> silver-lavender hair using the same source hair construction
 - gray eyes -> violet-blue eyes using the same source iris/catchlight method
@@ -253,5 +297,8 @@ Accessory cue patched within budget: pass/fail
 Background content patched within source complexity: pass/fail
 Character-sheet pressure controlled: pass/fail
 No full-redraw drift: pass/fail
+9:16 mobile portrait when requested: pass/fail/not requested
+App-safe face/focal placement: pass/fail/not requested
+Top header-safe zone clear of key facial features: pass/fail/not requested
 No text/watermark/signature: pass/fail
 ```

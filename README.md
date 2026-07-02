@@ -8,7 +8,7 @@ This repository packages three related skills:
 
 - `analyze-art-drawing`: analyzes illustration technique, medium feel, linework, eye rendering, hair construction, color handling, polish level, and style-transfer constraints.
 - `generate-character-from-reference`: generates or compiles prompts for 9:16 mobile portrait character images from a reference image plus a character description, while preserving the reference's visual grammar and replacing the identity with the supplied character.
-- `recast-character-in-reference`: treats the supplied image as an edit target and patches only character traits, outfit cues, accessories, and compressed background content into the existing pose, face construction, linework, lighting, and polish level.
+- `recast-character-in-reference`: treats the supplied image as an edit target and patches only character traits, outfit cues, accessories, and compressed background content into the existing pose, face construction, linework, lighting, and polish level. Includes Mobile portrait mode for forced 9:16 app-safe framing.
 
 ## Why This Repo Exists
 
@@ -78,6 +78,12 @@ Patch an existing reference image with a character prompt:
 
 ```text
 Use $recast-character-in-reference with this image and my character prompt. Keep the original pose, face construction, expression, hand placement, linework, lighting, and polish level. Patch only the hair, eyes, visible mark, outfit cues, accessories, and a compressed background cue.
+```
+
+Patch for mobile app portrait framing:
+
+```text
+Use $recast-character-in-reference in Mobile portrait mode with this image and my character prompt. Force 9:16. Keep the face/focal center app-safe below the header area, not too high or too low. If the recast output is badly placed, correct the framing while preserving the patched character and source style.
 ```
 
 Use `recast-character-in-reference` instead of `generate-character-from-reference` when the source image should stay structurally intact and the task is closer to "change this character into my OC" than "make a new image in this style."
