@@ -1,0 +1,4 @@
+interface:
+  display_name: "Character Recast Editor"
+  short_description: "Patch OC traits into reference art"
+  default_prompt: "Use $recast-character-in-reference with my reference image and character prompt to keep the original pose, face construction, linework, lighting, and style while patching only the character traits, outfit cues, accessories, and compressed background."

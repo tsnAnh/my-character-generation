@@ -1,13 +1,14 @@
 # Codex Character Art Skills
 
-Public-ready Codex skills for character art analysis and reference-conditioned character generation.
+Public-ready Codex skills for character art analysis, reference-conditioned character generation, and reference-locked character recasting.
 
 GitHub: https://github.com/tsnAnh/my-character-generation
 
-This repository packages two related skills:
+This repository packages three related skills:
 
 - `analyze-art-drawing`: analyzes illustration technique, medium feel, linework, eye rendering, hair construction, color handling, polish level, and style-transfer constraints.
 - `generate-character-from-reference`: generates or compiles prompts for 9:16 mobile portrait character images from a reference image plus a character description, while preserving the reference's visual grammar and replacing the identity with the supplied character.
+- `recast-character-in-reference`: treats the supplied image as an edit target and patches only character traits, outfit cues, accessories, and compressed background content into the existing pose, face construction, linework, lighting, and polish level.
 
 ## Why This Repo Exists
 
@@ -15,7 +16,8 @@ These skills are designed as a small workflow:
 
 1. Use `analyze-art-drawing` to turn a reference image into a technical style card.
 2. Use `generate-character-from-reference` to translate a new character into that style without copying the reference character's identity.
-3. Keep the output disciplined around linework, hair/eye rendering, visible medium behavior, detail density, palette handling, and polish ceiling.
+3. Use `recast-character-in-reference` when the source image should behave like an edit target: keep the pose, face construction, hand/crop logic, linework, lighting, and finish, then patch only named character traits.
+4. Keep the output disciplined around linework, hair/eye rendering, visible medium behavior, detail density, palette handling, and polish ceiling.
 
 ## Install
 
@@ -40,6 +42,7 @@ Install a single skill by passing its folder name:
 ```bash
 ./scripts/install.sh analyze-art-drawing
 ./scripts/install.sh generate-character-from-reference
+./scripts/install.sh recast-character-in-reference
 ```
 
 ## Manual Install
@@ -48,6 +51,7 @@ Install a single skill by passing its folder name:
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R skills/analyze-art-drawing "${CODEX_HOME:-$HOME/.codex}/skills/"
 cp -R skills/generate-character-from-reference "${CODEX_HOME:-$HOME/.codex}/skills/"
+cp -R skills/recast-character-in-reference "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
 ## Usage Examples
@@ -69,6 +73,14 @@ Prompt-only mode:
 ```text
 Use $generate-character-from-reference in prompt-only mode. Return the reference visual grammar, filtered character appearance, final image prompt, negative prompt, and QC checklist.
 ```
+
+Patch an existing reference image with a character prompt:
+
+```text
+Use $recast-character-in-reference with this image and my character prompt. Keep the original pose, face construction, expression, hand placement, linework, lighting, and polish level. Patch only the hair, eyes, visible mark, outfit cues, accessories, and a compressed background cue.
+```
+
+Use `recast-character-in-reference` instead of `generate-character-from-reference` when the source image should stay structurally intact and the task is closer to "change this character into my OC" than "make a new image in this style."
 
 ## Skill Compliance
 
@@ -99,10 +111,14 @@ Run the repo validator before publishing changes:
     │   ├── SKILL.md
     │   ├── agents/openai.yaml
     │   └── references/art-analysis-framework.md
-    └── generate-character-from-reference/
+    ├── generate-character-from-reference/
+    │   ├── SKILL.md
+    │   ├── agents/openai.yaml
+    │   └── references/generation-policy.md
+    └── recast-character-in-reference/
         ├── SKILL.md
         ├── agents/openai.yaml
-        └── references/generation-policy.md
+        └── references/recast-policy.md
 ```
 
 ## Updating The Public Repo
