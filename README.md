@@ -56,62 +56,56 @@ cp -R skills/recast-character-in-reference "${CODEX_HOME:-$HOME/.codex}/skills/"
 
 ## Using Skills In Codex
 
-After installing and restarting Codex, use the skill from a normal Codex message:
+After installing and restarting Codex:
 
 1. Open a Codex thread.
-2. Attach or paste the reference image into the message.
+2. Attach or paste the reference image.
 3. Paste the character prompt or visible trait list.
-4. Add a clear instruction such as `Use recast-character-in-reference...`.
+4. Start the request with the skill name, for example `Use $recast-character-in-reference...`.
 5. Send the message.
 
-About skill names and `$` chips:
-
-- The copyable examples below use plain skill names such as `recast-character-in-reference`.
-- A plain skill name is enough for Codex to understand the request when the skill is installed.
-- Copying `$recast-character-in-reference` from Markdown may paste as plain text instead of becoming a skill chip. That is okay if the skill is installed and Codex can read the skill name in the prompt.
-- To insert an actual skill chip in the Codex UI, type `$` in the message composer and select the skill from the picker instead of copy/pasting the `$...` text from this README.
-- If the chip picker does not show the skill, run `./scripts/install.sh recast-character-in-reference` and restart Codex.
+Tip: if copy/paste does not turn `$recast-character-in-reference` into a skill chip, type `$` in the Codex composer and pick the skill from the menu. If it is missing, install the skill and restart Codex.
 
 ## Usage Examples
 
 Analyze a reference image:
 
 ```text
-Use analyze-art-drawing to analyze this character art in Vietnamese. Focus on linework, hair construction, eye rendering, medium/material cues, polish level, and style-transfer locks.
+Use $analyze-art-drawing to analyze this character art in Vietnamese. Focus on linework, hair construction, eye rendering, medium/material cues, polish level, and style-transfer locks.
 ```
 
 Generate a new character from a reference:
 
 ```text
-Use generate-character-from-reference with this reference image and this character description. Generate a 9:16 mobile portrait. Preserve the reference art style, pose feeling, linework fingerprint, hair/eye rendering method, visible medium behavior, and polish level.
+Use $generate-character-from-reference with this reference image and this character description. Generate a 9:16 mobile portrait. Preserve the reference art style, pose feeling, linework fingerprint, hair/eye rendering method, visible medium behavior, and polish level.
 ```
 
 Prompt-only mode:
 
 ```text
-Use generate-character-from-reference in prompt-only mode. Return the reference visual grammar, filtered character appearance, final image prompt, negative prompt, and QC checklist.
+Use $generate-character-from-reference in prompt-only mode. Return the reference visual grammar, filtered character appearance, final image prompt, negative prompt, and QC checklist.
 ```
 
 Patch an existing reference image with a character prompt:
 
 ```text
-Use recast-character-in-reference with this image and my character prompt. Keep the original pose, face construction, expression, hand placement, linework, lighting, and polish level. Patch only the hair, eyes, visible mark, outfit cues, accessories, and a compressed background cue.
+Use $recast-character-in-reference with this image and my character prompt. Keep the original pose, face construction, expression, hand placement, linework, lighting, and polish level. Patch only the hair, eyes, visible mark, outfit cues, accessories, and a compressed background cue.
 ```
 
 Patch for mobile app portrait framing:
 
 ```text
-Use recast-character-in-reference in Mobile portrait mode with this image and my character prompt.
+Use $recast-character-in-reference in Mobile portrait mode with this image and my character prompt.
 ```
 
-Use `recast-character-in-reference` instead of `generate-character-from-reference` when the source image should stay structurally intact and the task is closer to "change this character into my OC" than "make a new image in this style."
+Use `$recast-character-in-reference` instead of `$generate-character-from-reference` when the source image should stay structurally intact and the task is closer to "change this character into my OC" than "make a new image in this style."
 
 ### Full Recast Example
 
 In Codex, attach the reference image, then paste a message like this:
 
 ```text
-Use recast-character-in-reference with the attached image as the edit target / structure lock.
+Use $recast-character-in-reference with the attached image as the edit target / structure lock.
 
 Keep the original pose, face construction, expression, hand placement, crop, linework, lighting, rendering method, and polish level. Patch only the visible character traits from my prompt.
 
@@ -132,7 +126,7 @@ Background: cozy balcony nook above a dreamy twilight city, compressed into one 
 If you want a mobile portrait, say this in the first line instead:
 
 ```text
-Use recast-character-in-reference in Mobile portrait mode with the attached image as the edit target / structure lock.
+Use $recast-character-in-reference in Mobile portrait mode with the attached image as the edit target / structure lock.
 ```
 
 For prompt-only output instead of direct generation, add:
