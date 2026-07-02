@@ -39,8 +39,8 @@ Optional inputs:
    - Mobile portrait mode: force 9:16 output when the user asks for mobile, app, avatar, portrait, phone wallpaper, 9:16, or explicitly says Mobile portrait mode.
 6. Split the character prompt into a patch map:
    - Replace: hair color, eye color, skin tone, visible marks, species traits, outfit color/silhouette cues, and a small number of accessories.
-   - Preserve: pose, crop, camera, expression, face proportion fingerprint, facial-feature construction, hand placement, linework, lighting, glow/specular behavior, medium/material behavior, rendering method, detail density, and polish ceiling.
-   - Compress: background, outfit details, accessories, magic/glow, props, and lore-driven motifs.
+   - Preserve: pose, crop, camera, expression, face proportion fingerprint, facial-feature construction, hand placement, linework, lighting, glow/specular behavior, medium/material behavior, rendering method, detail density, background rendering style, and polish ceiling.
+   - Compress: background, source decorative motifs, outfit details, accessories, magic/glow, props, and lore-driven motifs.
    - Omit: backstory, personality prose, relationship text, quality words, generic style labels, pose prose that conflicts with the source, and detail inventories that exceed the source image budget.
 7. Build a strict edit contract before prompting:
    - Structure locks from the source image.
@@ -58,6 +58,7 @@ Optional inputs:
 - Replace only visible local traits named by the character prompt.
 - Character local colors are allowed, but must be translated through the source image's value range, chroma handling, line tint, and lighting.
 - Background content can change only at the same complexity level as the source background. If the source background is simple or blurred, compress the new background into one or two faint cues.
+- Treat source-only decorative motifs such as flowers, leaves, vines, paper stars, props, foreground blur, ornaments, signs, or scenery as background/decor content, not character structure locks. Preserve their rendering style, softness, complexity, and lighting relationship; replace, reduce, or omit their subject matter when the character prompt asks for different background content.
 - Character magic/glow words must not create global glow unless the source image already has global glow. Convert magical traits into tiny local marks or small accessory highlights.
 - Do not copy source identity traits that the character prompt replaces, such as the source hair color, eye color, outfit, accessories, species, or background content.
 - Do not change the face construction unless the user supplies a separate face/identity reference or explicitly requests it.
@@ -74,7 +75,7 @@ Use this order:
 3. Source locks: pose, crop, expression, face construction, hand logic, linework, medium, lighting, glow/specular profile, detail density, and polish ceiling.
 4. Patch map: concise visible character replacements only.
 5. Outfit/accessory compression: one or two visible cues when the crop allows.
-6. Background patch: same style and complexity as the source.
+6. Background/decor patch: same rendering style, softness, lighting, and complexity as the source; content may be replaced by the character/request, and source-only decorative motifs should not be preserved unless they match the character/request.
 7. Glow/specular guard: local highlights only unless the source has global glow.
 8. Negative constraints: no full redraw, no new pose, no new face, no style drift, no fantasy glow, no raw character-sheet inventory, no unsafe face placement.
 

@@ -38,6 +38,7 @@ Edit target locks:
 - Medium/rendering:
 - Detail density:
 - Background style:
+- Background/decor rendering method:
 - Polish ceiling:
 
 Replace from character prompt:
@@ -52,7 +53,7 @@ Replace from character prompt:
 Compress:
 - Outfit details:
 - Accessories:
-- Background:
+- Background/decor content:
 - Magic/glow:
 - Props:
 
@@ -156,7 +157,28 @@ Do not add ornate jewelry, gem facets, chains, charms, or repeated motifs unless
 
 ### Background
 
-Background content follows the character/request, but style and complexity follow the source.
+Background content follows the character/request, but rendering style and complexity follow the source.
+
+Treat source-only decorative motifs as replaceable background/decor content, not structure locks. This includes flowers, leaves, vines, foreground blur, paper stars, furniture, props, scenery, signs, or ornamental framing that are not part of the requested character identity.
+
+Preserve:
+
+- softness or blur level
+- line/detail density
+- color/value restraint
+- lighting relationship to the character
+- foreground/background depth behavior
+- overall simplicity or density budget
+
+Replace, reduce, or omit:
+
+- source-specific flowers, leaves, plants, props, scenery, ornaments, or other decor when they are not in the character prompt
+- source background subject matter that conflicts with the requested character environment
+
+Example:
+
+- If the source has yellow flowers but the character prompt asks for a cozy balcony, do not lock the flowers. Replace them with a faint balcony rail, soft twilight wash, or a few distant city-light dots in the same blurred, low-detail background style.
+- If the source has blurred paper stars but the character prompt asks for a garden, paper stars can disappear; keep only the source's soft blur and complexity level.
 
 If the source background is simple, blurred, or low-detail:
 
@@ -211,7 +233,7 @@ Outfit/accessory budget: <concrete cap>.
 Background budget: <concrete cap>.
 Glow budget: <concrete cap>.
 
-Do not redraw the image as a new character illustration. Do not change pose, facial construction, expression, hand placement, crop, linework, lighting, rendering style, or polish level.
+Do not redraw the image as a new character illustration. Do not change pose, facial construction, expression, hand placement, crop, linework, lighting, background rendering method, or polish level.
 ```
 
 ## Placement Correction Pass
@@ -238,6 +260,7 @@ Avoid:
 - complex new outfit detail outside the visible crop
 - extra accessories beyond the source budget
 - full scenic background when the source is simple or blurred
+- source-only decor locked as if it were character identity; unnecessary flowers/leaves/props preserved when the character prompt asks for a different environment
 - global glow, aura, bloom haze, sparkle fields, neon rim light, glowy skin fog, or plastic mobile-game polish
 - cleaner, smoother, glossier, more symmetrical, more detailed, or more AI-polished finish than the source
 - mismatched line color, heavier outlines, vector-clean curves, or missing broken/lost contours
@@ -265,6 +288,7 @@ Replace:
 - add one moon hair clip or small star choker if crop allows
 
 Compress:
+- source flowers/leaves -> replaceable decor; remove unless the character prompt requests flowers
 - balcony tea background -> one faint balcony rail or tiny cup silhouette in the source background style
 - star accessories -> one or two tiny cues only
 
