@@ -98,6 +98,8 @@ Patch for mobile app portrait framing:
 Use $recast-character-in-reference in Mobile portrait mode with this image and my character prompt.
 ```
 
+Mobile portrait rule: when the request says Mobile portrait mode, mobile portrait, app avatar, phone wallpaper, or 9:16, the skill handles 9:16 output and app-safe face placement. You do not need to spell out the framing rules in the prompt.
+
 Use `$recast-character-in-reference` instead of `$generate-character-from-reference` when the source image should stay structurally intact and the task is closer to "change this character into my OC" than "make a new image in this style."
 
 ### Full Recast Example
@@ -121,12 +123,6 @@ Signature mark: tiny constellation mark beneath her left eye
 Outfit: cream knit cardigan over a midnight-blue dress
 Accessories: moonstone hair clips, pearl earrings, thin silver choker with a tiny star charm
 Background: cozy balcony nook above a dreamy twilight city, compressed into one or two faint cues
-```
-
-If you want a mobile portrait, say this in the first line instead:
-
-```text
-Use $recast-character-in-reference in Mobile portrait mode with the attached image as the edit target / structure lock.
 ```
 
 For prompt-only output instead of direct generation, add:
