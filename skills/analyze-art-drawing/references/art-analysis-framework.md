@@ -2,9 +2,9 @@
 
 Use this reference to produce professional, technical analysis of drawing, painting, and illustration style.
 
-## Fast Technical Style Card
+## Technical Style Card
 
-Start with a compact card when the user wants serious analysis:
+Start with a compact card for ordinary critique or study notes. When the output will feed image generation, style transfer, or another skill, expand this into a full card and follow it with the Generation Handoff Packet below.
 
 ```text
 Detected style family:
@@ -15,6 +15,8 @@ Surface/material cues:
 Linework:
 Linework fingerprint:
 Shape/proportion language:
+Face proportion fingerprint:
+Facial-feature construction:
 Value structure:
 Color system:
 Color handling/local-color policy:
@@ -27,6 +29,8 @@ Hair construction:
 Accessory/detail rendering:
 Imperfection/polish profile:
 Polish ceiling:
+Glow/specular profile:
+Glow budget:
 Composition/focal path:
 Detail-density budget:
 Palette/background budget:
@@ -48,7 +52,7 @@ Allowed character replacements:
 
 Trait translation matrix:
 - Character-controlled traits: <identity, hair color, eye color, skin tone, outfit, accessories, species traits, visible marks, explicit makeup>
-- Reference-controlled construction: <pose, expression, crop, linework, shading method, hair construction, strand density, edge quality, polish level, medium/material behavior, background style>
+- Reference-controlled construction: <pose, expression, crop, face proportion fingerprint, facial-feature construction, linework, shading method, hair construction, strand density, edge quality, glow/specular profile, polish level, medium/material behavior, background style>
 - Compatibility rule: <preserve character traits while drawing them with the reference technique>
 
 Visual budget:
@@ -63,12 +67,108 @@ Visual budget:
 - Strand density:
 - Material/rendering complexity:
 - Imperfection/polish ceiling:
+- Glow/specular budget:
 
 Drift risks:
 - <what will most likely push the output away from the reference style>
 ```
 
 Use this to prevent broad labels like "anime" or "polished" from overpowering the actual visual construction. A good transfer note says what to reduce or omit, not only what to add.
+
+## Generation Handoff Packet
+
+When another skill will consume the analysis, especially `generate-character-from-reference`, the output must include a detailed generation handoff packet. This packet should be reusable as-is by the prompt compiler. It should not require the downstream skill to re-analyze the image or guess missing constraints from broad style labels.
+
+Use this structure:
+
+```text
+Generation Handoff Packet
+Reference visual grammar:
+- Detected style family:
+- Medium feel:
+- Medium/material classification:
+- Medium confidence:
+- Medium evidence:
+- Surface/material cues:
+- Linework:
+- Linework fingerprint:
+- Line color/tint:
+- Line thickness/opacity:
+- Taper/pressure rhythm:
+- Broken/lost contour behavior:
+- Line density:
+- Contour authority:
+- Line-to-fill relationship:
+- Face rendering:
+- Face proportion fingerprint:
+- Facial-feature construction:
+- Eye rendering:
+- Eye coloring:
+- Iris layering:
+- Catchlight shape:
+- Lash grouping:
+- Sclera/eyelid tint:
+- Hair rendering:
+- Hair coloring:
+- Hair coloring/construction strategy:
+- Hair construction:
+- Strand density:
+- Skin rendering:
+- Makeup/cosmetics:
+- Clothing/material rendering:
+- Accessory/detail rendering:
+- Color system:
+- Color handling/local-color policy:
+- Lighting:
+- Glow/specular profile:
+- Value/shadow structure:
+- Edge hierarchy:
+- Background rendering:
+- Composition/crop:
+- Pose/expression:
+- Hand/crop logic:
+- Detail-density budget:
+- Palette handling:
+- Background complexity:
+- Accessory/detail budget:
+- Imperfection/polish profile:
+- Polish ceiling:
+- Glow budget:
+- Finish/polish:
+
+Hard style locks:
+- Linework lock:
+- Face proportion lock:
+- Eye rendering/coloring lock:
+- Hair coloring/construction lock:
+- Medium/material lock:
+- Lighting/value lock:
+- Glow/specular lock:
+- Background-style lock:
+- Detail-density lock:
+- Accessory/detail lock:
+- Palette lock:
+- Polish ceiling lock:
+
+Content-specific reference traits not to copy:
+- Identity:
+- Hair/eye/outfit/accessories:
+- Props/background/watermark/signature:
+
+Visual budget and compression guidance:
+- Safe character detail count:
+- Outfit detail allowance:
+- Accessory allowance:
+- Background content allowance:
+- Magic/glow/sparkle allowance:
+- Specular/dappled-light allowance:
+- What to hide, crop, or reduce:
+
+Likely drift risks:
+- <specific risks such as black outlines, dense hair strands, over-glossy skin, saturated palette, ornate accessories, full scenic background, cinematic lighting, fake paper texture, or over-clean AI polish>
+```
+
+The handoff packet must be concrete. For example, say "very thin warm gray-brown low-opacity lineart with broken/lost contours around pale hair" instead of "soft linework"; say "long narrow face, high forehead, almond eyes one eye-width apart, small low mouth, narrow pointed chin" instead of "pretty face"; say "hard white dappled sunlight spots only, no aura or global bloom" instead of "glowy"; say "one or two tiny accessory cues maximum" instead of "simple accessories"; say "background should remain a faint wash with one soft cue" instead of "minimal background".
 
 ## Trait Translation Matrix For Generation
 
@@ -79,7 +179,7 @@ Character-controlled:
 - Hair color, eye color, skin tone, outfit, accessories, species traits, visible marks, explicit makeup, and requested background content.
 
 Reference-controlled:
-- Pose, facial expression, camera/crop, gesture, hand logic, style family, visible medium/material behavior, line quality, shading method, hair construction, strand density, edge hierarchy, polish level, background style, and rendering complexity.
+- Pose, facial expression, face proportion fingerprint, facial-feature construction, camera/crop, gesture, hand logic, style family, visible medium/material behavior, line quality, shading method, hair construction, strand density, edge hierarchy, glow/specular profile, polish level, background style, and rendering complexity.
 
 Compatibility rule:
 - Keep the character's visible traits, but render them with the reference's drawing method. For example, a new hair color should keep that color, while the strand count, clump grouping, highlight shape, line looseness, and edge breaks should come from the reference.
@@ -202,6 +302,36 @@ Identify the stylization logic:
 
 Avoid only saying "anatomy is good". Say what is simplified, what is emphasized, and what is omitted.
 
+## Face Proportion Fingerprint
+
+When a reference will guide generation, analyze the face as a construction system, not only as a beauty type.
+
+Record:
+
+- Head shape: oval, heart, round, long, angular, V-line, soft square, or stylized hybrid.
+- Face ratio: face length versus width, forehead height, cheek fullness, jaw taper, chin length/point.
+- Feature placement: vertical spacing from hairline to brow, brow to nose, nose to mouth, mouth to chin.
+- Eye system: eye size relative to face width, eye spacing, eye tilt, upper/lower lid shape, brow distance, eyelid fold height.
+- Nose system: bridge length, nose tip shape, nostril marking, side-plane simplification, and whether the nose is line-driven or value-driven.
+- Mouth system: width, vertical placement, lip fullness, corner treatment, mouth gap value, and edge softness.
+- Facial asymmetry and camera distortion: head tilt, three-quarter turn, cheek compression, jaw angle, and perspective effects.
+- Style risk: what happens if the generator makes the face rounder, younger, more chibi, more generic anime, more photoreal, or more doll-like.
+
+For generation, write a face proportion lock:
+
+```text
+Face proportion lock:
+- Head/face shape:
+- Face length/width:
+- Eye size/spacing/tilt:
+- Brow/nose/mouth placement:
+- Jaw/chin/cheek construction:
+- Feature simplification:
+- Avoid:
+```
+
+Do not let character identity erase the reference's facial construction. The new character's face traits should be translated through the reference's head ratio, eye placement, nose/mouth simplification, and jaw/chin language unless the user explicitly provides a separate face or identity reference that overrides it.
+
 ## Value And Lighting
 
 Use value terms precisely:
@@ -217,6 +347,29 @@ Use value terms precisely:
 - **Diffuse highlight**: broad soft light on matte surfaces.
 
 Explain the hierarchy: where the darkest darks and brightest lights are placed, and how they steer the eye.
+
+## Glow, Bloom, And Specular Control
+
+Separate these effects carefully:
+
+- **Specular highlight**: hard or soft bright reflection on glossy skin, lips, eyes, hair, jewelry, or wet surfaces.
+- **Dappled light**: leaf/window-shaped light patches cast onto the subject, often with irregular edges and directional logic.
+- **Rim light**: edge separation along the silhouette.
+- **Bloom/glow**: light bleeding outward into surrounding pixels or atmosphere.
+- **Magic/aura**: subject-generated light, sparkles, floating particles, or supernatural illumination.
+- **Bokeh**: out-of-focus background or foreground light shapes, not the same as character glow.
+
+For generation notes, set a glow/specular lock:
+
+```text
+Glow/specular lock:
+- Preserve:
+- Allow:
+- Forbid:
+- Maximum sparkle/magic count:
+```
+
+If the reference has glossy highlights or dappled light but no aura, say so explicitly. For example: "Preserve hard white skin highlight patches and leaf-like dappled light; forbid global bloom, magical aura, floating sparkle fields, neon rim light, and glowy skin haze."
 
 ## Color Analysis
 
