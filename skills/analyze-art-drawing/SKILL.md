@@ -32,7 +32,7 @@ Always describe concrete visible drawing behavior:
 
 Do not stop at vibe words such as "soft", "pretty", "clean", "high quality", or "anime style". Translate them into technical mechanisms.
 
-When the analysis will feed another skill, image generation, style transfer, or character-from-reference workflow, produce a detailed reusable analysis packet. In that mode, the analysis is not a short user-facing critique; it is the source of truth for the downstream prompt compiler. Include enough concrete locks, budgets, and drift risks that the generator can reuse them without re-inferring the style from the image or from generic labels.
+When the analysis will feed another skill, image generation, style transfer, or character-from-reference workflow, produce a detailed reusable analysis packet. In that mode, the analysis is not a short user-facing critique; it is the source of truth for the downstream prompt compiler. Include concrete style anchors, conditional risk flags, budgets, and drift risks that the generator can reuse without re-inferring the style from the image or from generic labels. Do not turn every observation into first-prompt boilerplate; distinguish always-on art fidelity anchors from conditional guards that should appear only when the risk is active.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ When the analysis will feed another skill, image generation, style transfer, or 
 2. Build a technical style card before the prose analysis. If the analysis will feed generation, make this a full technical style card, not a compact summary.
 3. Analyze the image by construction layers: sketch/line, flats, values, shadows, highlights, texture, final polish.
 4. Name specific rendering techniques and explain where they appear.
-5. If the analysis will feed image generation or style matching, separate style-transfer locks from content-specific reference details. Include a trait translation matrix, linework fingerprint, face proportion fingerprint, facial-feature construction, hair construction, strand density, imperfection/polish profile, glow/specular profile, detail-density, palette, background, accessory/detail, and rendering-complexity budgets. Also include a downstream compression recommendation: how much character outfit, accessory, magic/glow, prop, and background content the reference can safely support before style drift.
+5. If the analysis will feed image generation or style matching, separate style-transfer anchors from content-specific reference details. Include a trait translation matrix, linework fingerprint, face proportion fingerprint, facial-feature construction, hair construction, strand density, imperfection/polish profile, glow/specular profile, detail-density, palette, background, accessory/detail, and rendering-complexity budgets. Also include conditional risk flags and downstream compression recommendations: how much character outfit, accessory, magic/glow, prop, and background content the reference can safely support before style drift.
 6. If the user wants prompt help, end with a compact style prompt block and negative constraints.
 7. If the user asks whether the analysis is detailed enough, deepen the technique layer: brush behavior, edge hierarchy, value grouping, layer workflow, material rendering, and reconstruction steps.
 
@@ -103,16 +103,27 @@ Reference visual grammar:
 - Imperfection/polish ceiling:
 - Glow budget:
 
-Hard style locks for downstream generation:
-- Linework lock:
-- Face proportion lock:
-- Eye rendering lock:
-- Hair construction lock:
-- Medium/material lock:
-- Lighting/value lock:
-- Glow/specular lock:
-- Background-style lock:
-- Polish ceiling lock:
+Always-on style anchors for downstream generation:
+- Linework anchor:
+- Face proportion / facial-feature construction anchor:
+- Eye rendering method anchor:
+- Hair construction / coloring method anchor:
+- Medium/material anchor:
+- Lighting/value anchor:
+- Glow/specular anchor:
+- Background-style anchor:
+- Detail-density / palette anchor:
+- Polish ceiling anchor:
+
+Conditional risk flags:
+- Eye visibility / occlusion risk:
+- Face-mark integration risk:
+- Hand/crop/anatomy risk:
+- Pale/noisy or long-hair risk:
+- Glow/magic pressure:
+- Accessory/prop/background pressure:
+- Palette/chroma pressure:
+- Anatomy-like artifact risk:
 
 Content-specific reference traits not to copy:
 - Identity, exact outfit, exact hair/eye colors, accessories, props, watermark/signature, and background content:

@@ -25,13 +25,17 @@ Build this map before prompting:
 Framing mode:
 - Source-crop mode or Mobile portrait mode:
 - App-safe focal placement:
+- Apparent character scale / zoom lock:
 
 Edit target locks:
 - Pose/crop/camera:
+- Apparent character scale and visible body-region inventory:
 - Style family / rendering model:
 - Realism/flatness/abstraction balance:
 - Face proportion fingerprint:
 - Facial-feature construction:
+- Default eye construction:
+- Eye visibility / occlusion logic only if risky:
 - Subject form/material modeling:
 - Expression/gaze:
 - Hand placement/crop logic:
@@ -50,6 +54,9 @@ Edit target locks:
 
 First-pass failure-prevention ledger:
 - Predictable prompt-pressure risks:
+- Always-on style anchors:
+- Active conditional prompt guards:
+- Hard QC gates to check after generation:
 - Required positive source-budget guards:
 - Required negative constraints:
 - Highest likely basic-defect risks:
@@ -84,21 +91,29 @@ The final edit prompt should use the map, not the raw character sheet.
 
 ## First-Pass Failure Prevention
 
-Do not rely on a later correction pass to fix drift that can be predicted before the first generation. The first prompt must contain explicit guards for foreseeable failures from both the source and the character prompt.
+Do not rely on a later correction pass to fix drift that can be predicted before the first generation. The first prompt must contain explicit guards for foreseeable failures from both the source and the character prompt, but it should not paste the full hard QC checklist into every first prompt.
+
+Use three layers:
+
+- **Always-on style anchors**: preserve source pose/crop/camera, apparent scale, face construction, default eye construction, expression, hand/crop logic, linework, lighting, medium/rendering model, subject form/material modeling, hair construction, background style, detail density, and polish ceiling.
+- **Conditional prompt guards**: include only risks actually created by the source, requested edit, or character prompt.
+- **Hard QC gates**: always inspect the output for style-lock failures and basic eye/face/hand/body/artifact defects, even when the first prompt stayed compact.
 
 Build a short prevention ledger before prompting:
 
 - source style/polish risk: how the model may clean, smooth, gloss, simplify, intensify, or over-render the source
 - character prompt pressure: words that invite a style or detail upgrade, such as royal, luxurious, cinematic, ornate, magic, armor, jewelry, lace, long hair, silver/pastel hair, detailed room, architecture, weather, reflective props, atmospheric lighting, or any dense prop inventory
-- anatomy risk: eyes/pupils, occluded facial features, hands/fingers, cropped limbs, body twist, accessory lines that can read as anatomy
+- anatomy risk only when active: unclear/malformed source eyes, one-eye/covered-eye source logic, face marks or hair/headwear crossing the eye area, flawed visible hands, cropped limbs, body twist, or accessory/background lines that can read as anatomy
 - placement risk: mobile header safety, face too high/low, key marks or accessories under UI
 - inventory risk: outfit, accessories, background, props, glow, and magic exceeding the source detail budget
 
-For every predictable risk, put a positive source-budget guard in the first prompt, then mirror it in negative constraints. Examples:
+For every active predictable risk, put one positive source-budget guard in the first prompt, then mirror it with a targeted negative constraint. Examples:
 
 - "Keep the source's rough grainy polish ceiling; do not make the result cleaner, smoother, glossier, more ornate, or more fantasy-polished."
 - "Compress royal/luxury cues into one or two visible accessories only; do not add dense jewelry, brocade, chains, armor, or full costume inventory."
 - "Compress the requested room into one or two background cues in the source's rendering style; no full scenic interior or prop cluster."
+- Use the compact default eye line for ordinary two-eye sources: "Preserve source eye construction, eyelid/pupil/catchlight logic, gaze, and only change eye color if requested."
+- Use explicit eye-visibility logic only when active: "If the source shows one eye because the other is hidden by angle/hair/crop, keep that hiding mechanism clear; if the edit exposes enough face for the second eye, draw the second eye in the same construction. No one-eyed/cyclops read."
 - "If hair, fabric, props, shadow, or background strokes cross a facial feature, hand, limb, or body contour, keep the underlying anatomy plausible and naturally occluded; do not let those marks read as duplicated features, melted anatomy, or extra body parts."
 
 If a predictable style/detail/glow/background/hair-noise failure appears because the first prompt did not guard it, treat that as a prompt-construction failure. Fix the prompt/skill guard for the next attempt instead of spending the only correction pass on broad cleanup while a central basic defect remains.
@@ -214,6 +229,15 @@ Replace eye color and tiny signature eye traits only. Preserve:
 - gloss/matte finish
 
 Do not convert simple eyes into galaxy eyes, jewel eyes, or hyper-detailed fantasy eyes.
+
+Eye visibility is a separate lock from eye color:
+
+- For ordinary two-eye sources with no eye-crossing hair, face marks, headwear, shadows, or malformed eye area, keep this compact in the prompt: preserve source eye construction, eyelid/pupil/catchlight logic, gaze, and only change eye color if requested.
+- Name whether the source shows two eyes, one eye with natural occlusion/crop, one eye due to stylized shadow/line simplification, or an unclear/malformed eye area.
+- If the source shows one visible eye, preserve the same occlusion/crop logic only when the head angle and crop remain the same. The hidden eye must be plausibly hidden by hair mass, face angle, shadow, or crop.
+- If the edit, hair change, reframing, or face visibility exposes enough face plane for a second eye, draw the second eye in the source's eye construction and value range.
+- Do not let hair strands, crowns/headpieces, face marks, shadows, rain, smoke, background strokes, or accessory lines erase, replace, or cover an eye unless the occlusion clearly matches the source.
+- Mark the output as a hard face-defect failure if it reads as one-eyed, missing an eye, blank-socketed, or cyclops-like.
 
 ### Face And Identity
 
@@ -391,51 +415,43 @@ Translate character words like "starlit", "glowing", "moonlight", or "magical" i
 ## Edit Prompt Template
 
 ```text
-Edit the attached image. Treat it as the structure lock and preserve its pose, crop, camera feeling, style family/rendering model, face proportion fingerprint, facial-feature construction, subject form/material modeling, expression, gaze, hand placement/crop logic, linework, lighting, rendering method, background style, detail density, and polish ceiling.
+Edit the attached image. Treat it as the structure lock, not loose inspiration.
+Preserve the source pose, crop, camera feeling, apparent character scale, visible body-region inventory, face proportion fingerprint, facial-feature construction, expression, gaze, hand placement/crop logic, linework, lighting, rendering method, background style, detail density, and polish ceiling.
 
 Framing mode: <source-crop mode OR Mobile portrait mode>. If Mobile portrait mode is active, force 9:16 vertical output, keep the face/focal center in the app-safe upper-middle band, reserve the top header-safe zone for nonessential background/hair only, and reframe by extending source-style background rather than changing pose or face construction.
 
-Style-family / rendering-model lock: <specific visible art family, medium behavior, and realism/flatness/abstraction balance>. Preserve the source's actual rendering model: realistic-painterly form modeling, flat cel simplification, webtoon/manhwa gradients, watercolor/ink/gouache/pencil texture, 3D material shading, photoreal camera behavior, pixel-art constraints, collage edges, or whatever is visibly present. Do not convert the source into a more realistic, flatter, cleaner, glossier, more painterly, more anime-like, more 3D-like, or more photoreal style unless that is already the source's style.
-
-Source-look priority: <specific visible style evidence: line tint/weight, broken or clean contours, fill/shadow method, edge behavior, texture/grain, background rendering, lighting/value range, and imperfect or clean polish ceiling>. Preserve this art method across the character and any extended background.
-
-First-pass drift guards: <short source-budget caps for predictable prompt-pressure risks: polish/style upgrade, over-ornamented outfit, full scenic background, glow/magic bloom, hair strand/noise drift, occluded eyes/facial features, hands/cropped anatomy, app framing, and accessory/background marks that can read as anatomy. State these guards before local trait replacements.>
+Always-on style anchors: <specific visible art family, medium behavior, realism/flatness/abstraction balance, form/material modeling, line tint/weight, broken or clean contours, fill/shadow method, edge behavior, texture/grain, lighting/value range, background rendering, hair construction, default eye construction, and imperfect or clean polish ceiling>. Preserve these anchors across the character and any extended background.
 
 Make only these visible replacements:
-- <hair replacement>
-- <eye replacement>
-- <skin/mark replacement; face marks are allowed when fitting, but must be subtle, source-style-integrated, and flush with/within the skin unless explicitly described as raised/painted/inked/attached. Move to accessory/clothing/species cue if the crop/style cannot support them>
+- <hair replacement; preserve source hair construction and fill method>
+- <eye replacement; default: preserve source eye construction, eyelid/pupil/catchlight logic, gaze, and only change eye color if requested>
+- <skin/mark replacement; include face-mark integration guard only if a face mark is requested or chosen>
 - <outfit cue>
 - <one or two accessory cues>
 - <compressed background cue if requested>
 
-Keep the source art method: <specific linework, eye rendering, hair construction, restrained hair strand density, source-matched low-frequency hair fill masses, global grain/noise behavior, skin shading, lighting, glow/specular profile, and finish>.
-
-Body-wide anatomy guard: preserve pose, placement, and crop, but repair malformed visible anatomy across eyes, pupils, face, nose, mouth, jaw, neck, shoulders, collarbones, chest/torso, waist, hips, arms, elbows, wrists, hands, fingers, legs, knees, ankles, feet, toes, joints, and silhouette. Keep every repair in the source's rough linework, value range, lighting, texture, and polish level. Do not let clothing, cuffs, embroidery, thread motifs, jewelry, hair, rain, magic, background lines, or highlights attach to or read as any body part.
-
-Hand-specific guard: preserve hand placement/crop but repair malformed, missing, extra, fused, or webbed fingers. A visible hand must show five plausible fingers, or the fifth finger must be naturally hidden by angle, palm overlap, sleeve/cuff, object contact, shadow, or crop. Keep the repair in the source's rough linework and polish level. Do not let cuff embroidery, thread motifs, jewelry, rain, magic, background lines, or white highlights spill onto the hand or read as webbing.
+Conditional guards used:
+<List only active guards, such as app-safe placement, one-eye/covered-eye logic, flawed visible hand repair, face-mark integration, pale/noisy hair fill, ornate accessory compression, simple-background compression, local-only glow, anatomy-like artifact prevention. If none are active beyond style anchors, write "none beyond default style anchors and QC gates.">
 
 Outfit/accessory budget: <concrete cap>. Reduce only local costume/accessory inventory; do not change the source style family, rendering model, form/material modeling, or light behavior.
 Background budget: <concrete cap>. Compress background content without flattening the source's rendering style or changing the overall realism/flatness/abstraction balance.
 Glow budget: <concrete cap>.
-Hair strand budget: match or reduce the source strand density; use broad clumps when the source is mass-first or ambiguous; avoid strand-by-strand rendering, dense flyaways, glossy string hair, or extra fine hair-line noise.
-Hair simplification priority: if the character prompt requests broad clumps or minimal strands, use fewer larger clumps with minimal internal linework; do not split the hair into many thin locks.
-Hair fill budget: for every hair color, recolor hair with broad source-style shadow/highlight masses and low-frequency paint/fill texture. Preserve source grain as global image/medium texture only, not concentrated inside the hair. Hair interiors should be calmer than the linework and should not become a speckle field. For pale, white, silver, pastel, neon, or highly saturated hair, use moderated color, darker roots/underside, or broad shadow islands when useful to create volume without tiny texture. Avoid speckled color static, salt-and-pepper hair texture, noisy dither, peppered value flecks, many tiny alternating strokes, airbrushed micro-streaks, glittery highlight crumbs, crunchy compression-like fill, or over-sharpened AI hair texture.
+Hair budget: match or reduce source strand density and use source-matched fill masses. Add detailed hair-noise guard only when hair color changes, hair is pale/saturated, or source/prompt creates long-hair/fine-strand risk.
 
-Do not redraw the image as a new character illustration. Do not change pose, style family/rendering model, facial construction, subject form/material modeling, expression, hand placement/crop logic, linework, lighting, background rendering method, hair strand density, or polish level.
+Targeted negative constraints: no full redraw, no new pose, no new face construction, no style-family/rendering-model drift, no medium shift, no loss of source form/material modeling, no polish upgrade, no raw character-sheet inventory, no text/watermark. Add only active negatives from the conditional guard list.
 ```
 
 ## Pre-Final QC And Reroll Gate
 
-Before returning a direct recast result, inspect the output itself. Passing the reference-lock check is necessary but not sufficient. The output must pass both gates:
+Before returning a direct recast result, inspect the output itself. For built-in image generation, open the saved bitmap with `view_image` or an equivalent visual inspection tool before writing QC. Do not claim pass/fail from the prompt, from tool success, or from memory. If the output cannot be opened, say QC is unverified and do not call it pass. Passing the reference-lock check is necessary but not sufficient. The output must pass both gates:
 
-1. Reference-lock gate: source pose/crop/camera, face construction, expression/gaze, hand placement/crop logic, style family/rendering model, linework, lighting, background style, hair construction, polish ceiling, and requested visible trait patches are preserved or correctly changed.
-2. Basic image-defect gate: every visible body part and boundary is plausible in the output's own image space, including eyes, pupils, face, nose, mouth, jaw, neck, shoulders, collarbones, chest/torso, waist, hips, arms, elbows, wrists, hands, fingers, legs, knees, ankles, feet, toes, body proportions, clothing/accessory boundaries, text/watermarks, and artifact zones.
+1. Reference-lock gate: source pose/crop/camera, face construction, expression/gaze, eye visibility/occlusion logic, hand placement/crop logic, style family/rendering model, linework, lighting, background style, hair construction, polish ceiling, and requested visible trait patches are preserved or correctly changed.
+2. Basic image-defect gate: every visible body part and boundary is plausible in the output's own image space, including eyes, pupils, missing/hidden eye logic, face, nose, mouth, jaw, neck, shoulders, collarbones, chest/torso, waist, hips, arms, elbows, wrists, hands, fingers, legs, knees, ankles, feet, toes, body proportions, clothing/accessory boundaries, text/watermarks, and artifact zones.
 
 Treat these as hard reroll or correction blockers even if the source style looks correct:
 
 - malformed, melted, fused, webbed, duplicated, missing, or extra visible body parts
-- broken eyes or pupils, mismatched gaze, duplicated facial parts, warped face, deformed nose/mouth/jaw/chin, or shifted facial construction
+- broken eyes or pupils, missing second eye when the face plane/crop implies it should exist, one-eyed/cyclops read, blank eye socket, mismatched gaze, duplicated facial parts, warped face, deformed nose/mouth/jaw/chin, or shifted facial construction
 - distorted neck, broken shoulders/collarbones, collapsed chest/torso, impossible waist/hip transition, or body silhouette that no longer makes anatomical sense
 - malformed arms, elbows, wrists, hands, fingers, legs, knees, ankles, feet, or toes
 - four-finger hands without natural occlusion logic
@@ -443,12 +459,13 @@ Treat these as hard reroll or correction blockers even if the source style looks
 - extra limbs, missing limbs, impossible joints, warped shoulders/wrists/ankles, or deformed anatomy
 - text, watermark, signature, obvious compression/artifact patches, or disconnected image debris near the subject
 - severe overpolish, style conversion, or detail noise that hides anatomy or makes the image read as AI-generated
+- hair/headwear/shadow/background strokes covering or replacing an eye without the same clear occlusion logic as the source
 
 Do not finalize an output just because it matches the reference art style, pose, or palette. If a basic defect is central, obvious, or on any visible body part, mark the QC as fail and use one correction or reroll when available.
 
 Use this priority order when deciding how to spend a single correction/reroll:
 
-1. P0 basic visual defects: broken eyes/pupils, duplicated or melted facial parts, warped face/nose/mouth, broken neck/shoulder/torso, malformed hands/fingers, extra/missing limbs, anatomy-like accessory/background artifacts, text/watermark, severe artifact debris, and unsafe mobile face placement.
+1. P0 basic visual defects: missing/covered eyes, one-eyed/cyclops read, broken eyes/pupils, duplicated or melted facial parts, warped face/nose/mouth, broken neck/shoulder/torso, malformed hands/fingers, extra/missing limbs, anatomy-like accessory/background artifacts, text/watermark, severe artifact debris, and unsafe mobile face placement.
 2. P1 structure and identity locks: wrong pose/crop/camera, wrong face construction, wrong expression/gaze, wrong required hair/eye/skin/outfit/mark/accessory trait, or missing required app framing.
 3. P2 source-rendering locks: wrong style family/medium, severe polish upgrade or flattening, loss of linework/lighting/form modeling, hair construction drift, or global glow drift.
 4. P3 inventory/detail budget: ornate costume, accessory clutter, background clutter, prop overload, or noncentral hair/detail noise that does not create a basic defect.
@@ -461,6 +478,12 @@ Use a targeted correction when the rest of the image passes and the failure is l
 
 ```text
 Keep the generated character, source pose/crop, face construction, expression, style family/rendering model, source form/material modeling, lighting, linework, hair rendering, outfit cues, background style, and polish ceiling unchanged. Correct only the visible basic defect: repair malformed eyes/pupils/face/nose/mouth/neck/shoulders/chest/torso/arms/wrists/hands/fingers/hips/legs/feet/joints/body proportions or anatomy-like accessory/background artifacts into plausible source-style anatomy. If a hand is visible, it must show five plausible fingers, or the fifth finger must be naturally hidden by overlap/crop/sleeve/shadow. Keep the correction in the same roughness, line tint, value range, texture, and imperfect polish as the source.
+```
+
+Use this targeted correction when the output reads as missing an eye:
+
+```text
+Keep the generated character, source pose/crop, head angle, face proportion fingerprint, expression, source style family/rendering model, lighting, linework, hair rendering, outfit cues, background style, and polish ceiling unchanged. Correct only the eye visibility defect. If the face plane and crop show enough room for two eyes, add/repair the second eye in the same eyelid shape, pupil/catchlight method, line tint, value range, and rough painterly finish as the visible eye. If the source angle truly supports one visible eye, make the hidden eye clearly and naturally hidden by the same hair mass, face angle, crop, or shadow so the character does not read as one-eyed, blank-socketed, or cyclops-like. Do not move the facial features or redesign the face.
 ```
 
 Reroll instead of finalizing when the output has multiple basic defects, a visible anatomy defect cannot be isolated cleanly, the correction would require a new pose or new face/body construction, or the result would still be unusable for an app avatar despite style fidelity.
@@ -497,6 +520,8 @@ Do not use a placement correction to alter hair color, eye color, outfit cues, a
 
 ## Anti-Redraw Negative Prompt
 
+Use this as a targeted negative bank, not as a paragraph to paste in full. First-pass prompts should include the always-on anti-redraw/style negatives plus only the active conditional risks from the prevention ledger. The full list remains useful for QC, rerolls, and local corrections.
+
 Avoid:
 
 - full redraw from scratch
@@ -504,7 +529,7 @@ Avoid:
 - different style family, unsupported style label, unsupported photoreal/anime/watercolor/3D/sketch/etc. label, style simplification, style upgrading, or loss of the source realism/flatness/abstraction balance
 - flat anime, cel-shaded anime, webtoon/manhwa simplification, painterly realism, photorealism, 3D rendering, watercolor/ink conversion, oil-paint conversion, or clean mobile-game/fantasy character art unless the source visibly supports that direction
 - loss of source-specific form/material modeling, medium texture, edge behavior, lighting logic, brush/pigment/line behavior, or camera/rendering behavior
-- malformed eyes, mismatched pupils, duplicated facial parts, warped face, deformed nose/mouth/jaw/chin, distorted neck, broken shoulders/collarbones, collapsed chest/torso, impossible waist/hip transition, malformed arms/elbows/wrists, malformed legs/knees/ankles/feet, missing/extra limbs, impossible joints, collapsed proportions, or broken body silhouette
+- malformed eyes, missing second eye when the visible face plane should show it, one-eyed/cyclops read, blank eye socket, hair/headwear/shadow/background strokes erasing an eye without clear source-matched occlusion, mismatched pupils, duplicated facial parts, warped face, deformed nose/mouth/jaw/chin, distorted neck, broken shoulders/collarbones, collapsed chest/torso, impossible waist/hip transition, malformed arms/elbows/wrists, malformed legs/knees/ankles/feet, missing/extra limbs, impossible joints, collapsed proportions, or broken body silhouette
 - malformed hands, missing fingers, four-finger hands without natural occlusion, extra fingers, fused fingers, webbed fingers, melted palms, duplicate nails, broken knuckles, warped wrists, or white/stringy hand artifacts
 - cuff embroidery, lace, glass-thread motifs, jewelry, hair, clothing edges, rain streaks, magic effects, background lines, or white highlights spilling onto or reading as eyes, face parts, fingers, limbs, joints, webbing, or stray anatomy
 - different face ratio, rounder anime face, chibi face, doll face, photoreal face, or shifted features
@@ -561,9 +586,13 @@ Preserve:
 ## QC Checklist
 
 ```text
+Actual output bitmap opened before QC: pass/fail
 Edit-target structure preserved: pass/fail
 Basic image-defect gate passed: pass/fail
 Visible anatomy/body-part plausibility passed: pass/fail
+Eye visibility/occlusion logic preserved or repaired: pass/fail
+No one-eyed/cyclops read: pass/fail
+Second eye present when face plane/crop supports it, or naturally hidden by source-matched occlusion: pass/fail
 Pose/crop/camera preserved: pass/fail
 Face proportion fingerprint preserved: pass/fail
 Facial-feature construction preserved: pass/fail

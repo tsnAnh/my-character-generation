@@ -91,16 +91,17 @@ Use `analyze-art-drawing` for this phase when available. Pull concrete terms fro
 
 ## Analysis Handoff Contract
 
-`generate-character-from-reference` should consume the detailed Generation Handoff Packet from `analyze-art-drawing` whenever that skill is available. The packet is the source of truth for the reference's visual grammar, budgets, locks, and drift risks. Do not replace it with a generic style summary, and do not re-infer looser budgets from the raw character sheet.
+`generate-character-from-reference` should consume the detailed Generation Handoff Packet from `analyze-art-drawing` whenever that skill is available. The packet is the source of truth for the reference's visual grammar, budgets, style anchors, conditional risk flags, and drift risks. Do not replace it with a generic style summary, and do not re-infer looser budgets from the raw character sheet.
 
 The downstream generator must reuse these packet fields directly:
 
 - Reference visual grammar: medium/material behavior, style family, face proportion, facial-feature construction, linework, face/eye/hair/skin/clothing/background rendering, color handling, lighting, glow/specular behavior, edges, composition, pose, expression, hand/crop logic, and finish.
-- Hard style locks: face proportion lock, linework lock, eye rendering lock, hair construction lock, medium/material lock, lighting/value lock, glow/specular lock, background-style lock, detail-density lock, accessory/detail lock, palette lock, and polish ceiling lock.
+- Always-on style anchors: face proportion, facial-feature construction, linework, eye rendering method, hair construction, medium/material behavior, lighting/value structure, glow/specular behavior, background style, detail density, accessory/detail rendering, palette handling, and polish ceiling.
+- Conditional risk flags: eye occlusion/malformed eye risk, face-mark integration risk, hand/crop risk, pale/noisy or long-hair risk, glow/magic pressure, ornate accessory pressure, dense background/prop pressure, palette pressure, and anatomy-like artifact risk.
 - Visual budget and compression guidance: safe character detail count, outfit allowance, accessory allowance, background allowance, magic/glow/sparkle allowance, specular/dappled-light allowance, and what to hide, crop, or reduce.
 - Drift risks: the specific ways the generated image will likely become too ornate, too polished, too colorful, too scenic, too line-heavy, or otherwise unlike the reference.
 
-If the packet is missing a field required for known-failure preflight, fill that field by analyzing the primary reference before prompting. Do not generate from an incomplete packet when the missing field affects linework, hair construction, eye rendering, polish ceiling, detail density, accessory budget, background complexity, palette handling, or pose/hand/crop.
+If the packet is missing an always-on style anchor or active conditional risk field, fill that field by analyzing the primary reference before prompting. Do not generate from an incomplete packet when the missing field affects linework, hair construction, eye rendering, polish ceiling, detail density, accessory budget, background complexity, palette handling, or pose/hand/crop.
 
 ## Medium / Material Lock
 
@@ -142,31 +143,39 @@ Suppress or reduce:
 
 This contract must shape the final prompt. Do not paste all three sections if the user only wants a direct generation; use them internally to keep the prompt disciplined.
 
-## Known Failure Preflight
+## Style Anchors And Conditional Guards
 
-Before calling image generation, run a prompt preflight. A known hard failure must be guarded in the first prompt, not discovered only after QC. If a reference visibly contains one of these constraints, the final prompt must contain a concrete positive lock and concrete avoid line for it.
+Before calling image generation, run a prompt preflight. The first prompt must always include the reference's core visual grammar, but it should not paste the full hard QC checklist into every prompt. Use three layers:
 
-Required guards:
+- **Always-on style anchors**: medium/rendering model, style family, face proportion, facial-feature construction, linework, eye rendering/coloring method, hair construction/coloring method, restrained strand density, detail density, palette handling, lighting/value structure, glow/specular behavior, background style, and polish ceiling.
+- **Conditional prompt guards**: short positive lock plus targeted negative constraint for risks that are active in the reference, character sheet, or request.
+- **Hard QC gates**: always inspect the output after generation for style-lock failures and basic eye/face/hand/body/crop/artifact defects, even when the first prompt stayed compact.
 
-- **Face proportion fingerprint**: head shape, face length/width, forehead/eye/nose/mouth/chin spacing, eye size/spacing/tilt, brow/nose/mouth construction, jaw/chin/cheek shape, and feature simplification.
-- **Linework fingerprint**: line color/tint, thickness range, opacity, taper/pressure rhythm, broken/lost contour behavior, line density, contour authority, line-to-fill relationship.
-- **Hair construction**: mass-first or strand-first strategy, restrained strand density, clump scale, highlight shape, edge behavior, and whether extra strands are forbidden.
-- **Polish ceiling**: whether the output must preserve roughness, line wobble, uneven fill, loose edges, imperfect gradients, scanned texture, or restrained digital polish.
-- **Glow/specular profile**: which highlights are true glow/bloom/aura versus hard specular highlights, dappled light, rim light, color-dodge-like accents, or bokeh; maximum magic/sparkle/glow count.
-- **Eye rendering/coloring**: eye color fidelity plus iris layering, catchlight shape, lash grouping, sclera tint, eyelid redness, and gloss/matte finish.
-- **Character local colors**: hair, eyes, skin, outfit, marks, and accessory colors from the character description.
-- **Accessory/detail rendering**: which accessories are allowed as small cues, which are hidden/cropped/simplified, and what material precision is forbidden.
-- **Background complexity**: whether the background must remain plain, abstract, faint, low-detail, or scene-rich.
-- **Character-sheet pressure**: which visible traits survive compression, the maximum number of outfit/accessory/background/magic cues allowed, and which raw character-sheet details are explicitly hidden, cropped, omitted, or reduced.
-- **Pose/expression/hand crop**: pose source, expression source, face construction source, hand visibility, occlusion, and anatomy simplification.
+Always-on anchor examples:
+
+- **Face construction anchor**: head shape, face length/width, feature spacing, eye size/spacing/tilt, brow/nose/mouth construction, jaw/chin/cheek shape, and feature simplification.
+- **Linework anchor**: line color/tint, thickness range, opacity, taper/pressure rhythm, broken/lost contour behavior, line density, contour authority, line-to-fill relationship.
+- **Eye rendering anchor**: character eye color can change, but iris layering, catchlight shape, lash grouping, sclera tint, eyelid redness, and gloss/matte finish follow the reference.
+- **Hair construction anchor**: character hair color can change, but mass/strand strategy, restrained strand density, clump scale, highlight shape, edge behavior, fill method, and polish level follow the reference.
+- **Medium/polish anchor**: preserve visible medium behavior, texture, roughness or clean finish, value structure, and polish ceiling exactly.
+
+Conditional guard triggers:
+
+- **Eye visibility/occlusion**: include only when source eyes are unclear/malformed, one eye is naturally hidden, hair/headwear/marks cross the eye area, or the edit/reframe exposes more face plane.
+- **Face mark**: include only when the character prompt requests/implies a face mark or the prompt compiler chooses one as a signature cue.
+- **Hands/anatomy**: include only when hands/body parts are visible and flawed/ambiguous, hand-adjacent details are requested, or accessories/background strokes may read as anatomy.
+- **Hair noise**: include detailed hair fill/noise guard only when hair color changes, hair is pale/silver/pastel/neon/saturated, the prompt requests long hair, or the source is mass-first/low-strand and likely to drift.
+- **Glow/magic**: include only when character/request uses glowing, magical, moonlight, starlit, sparkle, aura, or similar terms.
+- **Accessory/background pressure**: include only when character/request has dense outfit, accessories, props, or scenic background beyond the reference budget.
+- **Palette pressure**: include when character local colors are much more saturated or numerous than the reference palette.
 
 Preflight rules:
 
-- If a known hard-failure axis is relevant and the prompt lacks a concrete guard, revise the prompt before generation.
+- If an always-on style anchor is missing or an active conditional risk lacks a concrete guard, revise the prompt before generation.
 - Do not rely on generic phrases such as "strictly match style", "same linework", "high quality", "not too detailed", or "follow reference" as a guard.
-- For every high-risk axis, use visible terms from the reference analysis. Example: "very thin warm gray-brown low-opacity lineart with broken/lost contours" is a guard; "soft anime linework" is not.
+- For every active high-risk axis, use visible terms from the reference analysis. Example: "very thin warm gray-brown low-opacity lineart with broken/lost contours" is a guard; "soft anime linework" is not.
 - For character-sheet pressure, use the analysis packet's visual budget to write numeric or concrete caps where possible. Example: "show only the constellation mark plus one tiny jewelry cue; compress the city scene into one faint background wash" is a guard; "keep it simple" is not.
-- If the generated image fails a defined hard-failure axis and the prompt did not include its guard, classify it as a prompt-compiler miss, not a normal reroll.
+- If the generated image fails a defined active risk and the prompt did not include its guard, classify it as a prompt-compiler miss, not a normal reroll.
 - Reroll is reserved for model noncompliance after the prompt preflight passed, or for a newly observed failure mode not yet defined in the policy.
 
 ## Visual Budget And Character Compression
@@ -421,7 +430,7 @@ If the reference reads as hand-drawn, scanned, or hand-finished digital, preserv
 
 ## Prompt Template
 
-Use this order for first-pass prompts.
+Use this order for first-pass prompts. Keep the prompt surgical: include the always-on style anchors, compressed character traits, and only the conditional guards that are active for this reference/request. Do not paste the whole QC checklist into the first prompt.
 
 ```text
 Generate a 9:16 mobile portrait image, regardless of the reference image's aspect ratio.
@@ -431,8 +440,8 @@ Use the attached image as the primary visual reference.
 Make the result feel like the reference image was redrawn with a different character identity.
 Strictly match the reference pose idea, facial expression, gaze direction, head angle, camera feeling, hand placement, hand visibility/crop, composition intent, face proportion fingerprint, facial-feature construction, linework fingerprint, face simplification, eye rendering/coloring method, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, restrained strand density, skin shading, clothing shading, makeup/cosmetic rendering, lighting direction, glow/specular profile, shadow softness, highlight placement, contrast, background rendering treatment, and overall finish.
 
-Reference visual grammar:
-<detailed Generation Handoff Packet fields from analyze-art-drawing; include concrete face proportion, facial-feature construction, linework, eye, hair, medium, palette, glow/specular, detail-density, accessory, background, pose/hand/crop, and polish locks>
+Always-on style anchors from the reference:
+<compact concrete anchors from analyze-art-drawing: medium/rendering model, linework, face proportion and facial-feature construction, eye rendering method, hair construction/fill method, palette/color handling, lighting/value structure, glow/specular behavior, background style, detail density, and polish ceiling>
 
 Compressed character trait locks:
 Preserve the new character's visible traits after the hard compression gate: <face/skin, hair color, eye color, subtle visible marks/species traits, one or more outfit/accessory/background cues only within the packet's visual budget>. Do not replace these with the reference character's identity traits. Do not paste the raw character sheet or full accessory/background inventory here. Face marks are allowed when they fit the character description or identity cue; if included, render them tiny, low-contrast, and integrated with the reference face line tint, shading softness, edge roughness, value range, and medium behavior. Unless the prompt explicitly says the mark is raised, embossed, painted, metallic, glowing, inked, or attached, treat it as flat pigment under/within the skin, flush with the face surface, with no raised edge, cast shadow, sticker outline, or separate material highlight.
@@ -440,16 +449,8 @@ Preserve the new character's visible traits after the hard compression gate: <fa
 Reference construction locks:
 Draw those character traits using the reference construction: <pose, expression, face proportion fingerprint, facial-feature construction, camera/crop, hand logic, linework fingerprint, shading method, glow/specular behavior, eye rendering/coloring, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, restrained strand density, edge quality, accessory/detail rendering, background style>. Eye color follows the character; iris layering, catchlight shape, lash grouping, sclera tint, eyelid redness, and eye finish follow the reference. Hair color follows the character; hair base-fill method, shadow hue behavior, restrained strand density, clump grouping, highlight shape, edge behavior, and polish level follow the reference.
 
-Known failure guards:
-- Linework guard: <specific line color/tint, thickness range, opacity, taper rhythm, broken/lost contour behavior, line density, contour authority, line-to-fill relationship>. Avoid <specific linework drift such as black outlines, crisp vector curves, dense interior line detail, heavy contour authority>.
-- Face proportion guard: <specific head/face shape, face length/width, eye size/spacing/tilt, brow/nose/mouth placement, jaw/chin/cheek construction, feature simplification>. Avoid <generic anime face, rounder/chibi face, doll face, photoreal facial planes, wrong age impression, or shifted feature spacing>.
-- Hair guard: <specific mass/clump strategy, allowed strand density, clump scale, highlight shape, edge behavior>. Avoid <strand-by-strand rendering, dense flyaway fields, glossy string hair, many extra fine hair lines, glossy perfect gradients, over-polished hair volume, wrong construction>.
-- Polish guard: <specific imperfection/polish ceiling>. Avoid <cleaner/smoother/glossier/more detailed output than reference>.
-- Glow/specular guard: <specific allowed hard highlights, dappled light, bokeh, rim light, or local glow count>. Avoid <global glow, bloom haze, magic aura, sparkle fields, neon rim light, over-glossy plastic skin, or glowy mobile-game polish if not present in the reference>.
-- Eye guard: <specific iris/catchlight/lash/sclera strategy>. Avoid <extra iris complexity, wrong catchlights, over-glossy eyes>.
-- Face-mark guard: <include or omit face mark based on character fit and reference visual budget; if included, render it as a tiny, low-contrast, source-style-integrated birthmark/scar/tint, flat pigment under/within the skin unless explicitly described as raised/painted/inked/attached>. Avoid <sticker-like symbols, crisp emblem geometry, glowing runes, high-contrast under-eye icons, floating marks, mismatched tattoo linework, raised edges, cast shadows, sticker outlines, or separate-material face marks>.
-- Detail/background/accessory guard: <specific visual budget>. Avoid <ornate accessories, busy background, extra props, full outfit exposition when the reference does not support it>.
-- Character-sheet pressure guard: <concrete caps from the compression gate, such as one outfit cue, one or two accessory cues, one faint background cue, tiny local glow only>. Avoid <raw character-sheet inventories, full scene, prop clusters, dense motifs, unbounded sparkle/glow>.
+Conditional guards used:
+<List only active guards and keep them short. Examples: face-mark integration, one-eye/covered-eye logic, visible-hand repair, pale/noisy hair fill, glow/magic as local-only, ornate accessory cap, simple-background cap, palette compression, anatomy-like artifact prevention. If no extra risk is active, write "none beyond style anchors, compression budget, and QC gates.">
 
 Medium/material lock:
 Preserve the reference's visible medium behavior exactly: <traditional/scanned/digital/mixed/3D/uncertain medium feel + visible evidence>. Apply the same surface texture, line material, pigment/brush/layer behavior, edge artifacts, and finish to character and background. Do not convert the reference into a cleaner digital style, traditional-media texture, 3D render, photo-realism, or another medium unless explicitly requested.
@@ -477,10 +478,13 @@ Character appearance:
 Background:
 <compressed scene content from character/request, rendered strictly in the reference background style and reference background complexity; obey the packet's background allowance, such as one faint cue if reference background is simple>
 
-Do not copy the reference character identity, hair color, eye color, outfit, accessories, species, watermark, signature, or background content unless explicitly requested.
+Targeted negative constraints:
+Always avoid full redraw, different art family, medium shift, cleaner/glossier polish, wrong pose/expression/crop, copied reference identity, raw character-sheet inventory, text, watermark, and signature. Add only the active negatives from the conditional guards above.
 ```
 
 ## Negative Prompt / Anti-Slop
+
+Use this as a targeted negative bank, not as a paragraph to paste in full. First-pass prompts should include the always-on anti-redraw/style negatives plus only active conditional risks. The full list remains the QC/reroll reference.
 
 Avoid:
 
@@ -581,9 +585,9 @@ Minimum acceptable result:
 
 ## One-Reroll Rule
 
-Generate one initial image only after Known Failure Preflight passes. Reroll automatically at most once, only for model noncompliance after the prompt contained the relevant hard guard, or for a newly observed failure not yet covered by this policy.
+Generate one initial image only after style-anchor and conditional-guard preflight passes. Reroll automatically at most once, only for model noncompliance after the prompt contained the relevant active guard, or for a newly observed failure not yet covered by this policy.
 
-Do not use reroll to compensate for a missing prompt guard. If a failure was already defined in this policy and the first prompt did not explicitly guard it, the correct action is to fix the prompt compiler or policy wording, then generate again with the missing guard present. If the first prompt includes raw character-sheet pressure that should have been suppressed by the hard compression gate, also label that as a prompt-compiler miss, not as a normal reroll.
+Do not use reroll to compensate for a missing active prompt guard. If a failure was predictable from this policy, the reference, or the character prompt and the first prompt did not explicitly guard it, the correct action is to fix the prompt compiler or policy wording, then generate again with the missing guard present. If the first prompt includes raw character-sheet pressure that should have been suppressed by the hard compression gate, also label that as a prompt-compiler miss, not as a normal reroll.
 
 Hard QC failures:
 

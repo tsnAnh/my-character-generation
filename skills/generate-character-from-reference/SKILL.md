@@ -37,14 +37,17 @@ Optional inputs:
 4. Build a style fidelity contract and trait translation matrix from the analysis packet: reference invariants, character trait locks, reference construction locks, allowed character replacements, and suppressed character-sheet details. Do not let the raw character sheet override the packet's visual-budget, background-complexity, accessory-budget, hair-strand, palette, or polish limits.
 5. Filter the character description. Keep visible identity and appearance details that fit the reference visual budget, especially character local colors and signature accessories/marks. Remove lore, relationship prose, habits, abstract personality, style adjectives, quality words, background over-description, and any pose/camera/gaze/gesture/hand-action wording that conflicts with the reference.
 6. Run a hard character-compression gate before writing the final prompt. Convert the filtered character sheet into a short visible-traits list constrained by the analysis packet's budgets: face/skin/eyes/hair, one outfit cue, the allowed number of accessory cues, the allowed number of magic/glow cues, and the allowed background cue count. Hide, crop, omit, or reduce any character-sheet detail that would exceed the reference visual budget. This is prompt compilation, not a post-generation QC task.
-7. Build known-failure guards before the final prompt. For every hard QC axis in the policy, add a concrete guard when the reference indicates risk: face proportion fingerprint, facial-feature construction, linework fingerprint, hair strand density, hair clump strategy, polish ceiling, glow/specular budget, eye rendering, palette handling, accessory/detail budget, background complexity, character-sheet pressure, pose/expression, hands/crop, and character local color fidelity. Do not generate until these guards are explicit, observable, and written as positive locks plus negative constraints.
+7. Classify prompt guidance into three layers before writing the final prompt:
+   - Style anchors are always included: reference medium/rendering model, linework, face construction, eye rendering method, hair construction, color handling, lighting, background style, detail density, and polish ceiling.
+   - Conditional prompt guards are included only when the reference, character sheet, or request creates that risk: eye occlusion or malformed eyes, face marks near eyes, hand/crop hazards, pale/noisy or long-hair drift, glow/magic, ornate accessories, dense scenery, palette pressure, or anatomy-like artifacts.
+   - Hard QC gates are always evaluated after generation: basic eye, face, hand/body anatomy, style drift, crop/framing, text/watermark, and identity/local-color failures are never accepted just because the first prompt stayed compact.
 8. Build the final prompt in this order:
    1. 9:16 mobile portrait output lock and safe face/focal placement.
    2. Reference role and strict style/pose/expression lock.
-   3. Reference visual grammar from the detailed analysis packet.
+   3. Always-on style anchors from the detailed analysis packet.
    4. Compressed character trait locks from the hard character-compression gate.
-   5. Reference construction locks, including face proportion lock, facial-feature construction lock, linework fingerprint lock, and glow/specular lock.
-   6. Known failure guards.
+   5. Reference construction locks, including face proportion, facial-feature construction, linework fingerprint, eye rendering method, hair construction, glow/specular behavior, and polish ceiling.
+   6. Conditional guards used, limited to active risks.
    7. Medium/material lock.
    8. Imperfection/polish ceiling.
    9. Style fidelity contract and style-matched detail budget.
@@ -53,8 +56,8 @@ Optional inputs:
    12. Makeup inheritance or makeup blending rule.
    13. Compact character appearance after compression.
    14. Background content from character/requested scene, compressed to the analysis packet's background budget and rendered in reference background style.
-   15. Negative constraints.
-9. Run prompt preflight against the policy checklist before generation. If the prompt is missing a guard for a defined hard-failure mode or uses raw uncompressed character-sheet details that exceed the analysis packet's budgets, revise the prompt first instead of generating.
+   15. Targeted negative constraints.
+9. Run prompt preflight against the style anchors, active conditional guards, and compression budget before generation. If the prompt lacks an always-on style anchor, lacks a guard for an active risk, or uses raw uncompressed character-sheet details that exceed the analysis packet's budgets, revise the prompt first instead of generating.
 10. Generate one initial image by default with the available image generation tool/workflow.
 11. Run QC using the policy checklist. Reroll at most once, and only for a model miss or newly observed failure after prompt preflight passed. If the failure was already defined but the prompt lacked the required guard, or if the prompt included uncompressed character-sheet pressure that the analysis packet should have suppressed, treat it as a prompt-compiler miss, fix the prompt/skill guard, and do not describe it as an ordinary reroll reason.
 
@@ -90,8 +93,9 @@ For prompt-only work, return:
 Reference visual grammar from analyze-art-drawing:
 Hard compression gate:
 Filtered/compressed character appearance:
+Conditional guards used:
 Final image prompt:
-Negative prompt / anti-slop:
+Targeted negative prompt / anti-slop:
 QC checklist:
 ```
 

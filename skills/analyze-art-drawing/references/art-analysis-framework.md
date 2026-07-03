@@ -41,7 +41,7 @@ Palette/background budget:
 When the analysis will be used for image generation, add this compact fingerprint after the style card:
 
 ```text
-Style invariants to preserve:
+Always-on style anchors to preserve:
 - <linework fingerprint, value range, rendering mode, edge behavior, lighting, background style, detail density>
 
 Content-specific reference traits not to copy:
@@ -71,9 +71,19 @@ Visual budget:
 
 Drift risks:
 - <what will most likely push the output away from the reference style>
+
+Conditional risk flags:
+- Eye visibility / occlusion risk:
+- Face-mark integration risk:
+- Hand/crop/anatomy risk:
+- Pale/noisy or long-hair risk:
+- Glow/magic pressure:
+- Accessory/prop/background pressure:
+- Palette/chroma pressure:
+- Anatomy-like artifact risk:
 ```
 
-Use this to prevent broad labels like "anime" or "polished" from overpowering the actual visual construction. A good transfer note says what to reduce or omit, not only what to add.
+Use this to prevent broad labels like "anime" or "polished" from overpowering the actual visual construction. A good transfer note says what to always preserve, what to reduce or omit, and which guards are conditional rather than automatically pasted into every first prompt.
 
 ## Generation Handoff Packet
 
@@ -136,19 +146,29 @@ Reference visual grammar:
 - Glow budget:
 - Finish/polish:
 
-Hard style locks:
-- Linework lock:
-- Face proportion lock:
-- Eye rendering/coloring lock:
-- Hair coloring/construction lock:
-- Medium/material lock:
-- Lighting/value lock:
-- Glow/specular lock:
-- Background-style lock:
-- Detail-density lock:
-- Accessory/detail lock:
-- Palette lock:
-- Polish ceiling lock:
+Always-on style anchors:
+- Linework anchor:
+- Face proportion / facial-feature construction anchor:
+- Eye rendering/coloring method anchor:
+- Hair coloring/construction anchor:
+- Medium/material anchor:
+- Lighting/value anchor:
+- Glow/specular anchor:
+- Background-style anchor:
+- Detail-density anchor:
+- Accessory/detail rendering anchor:
+- Palette anchor:
+- Polish ceiling anchor:
+
+Conditional risk flags:
+- Eye visibility / occlusion risk:
+- Face-mark integration risk:
+- Hand/crop/anatomy risk:
+- Pale/noisy or long-hair risk:
+- Glow/magic pressure:
+- Accessory/prop/background pressure:
+- Palette/chroma pressure:
+- Anatomy-like artifact risk:
 
 Content-specific reference traits not to copy:
 - Identity:
@@ -168,7 +188,7 @@ Likely drift risks:
 - <specific risks such as black outlines, dense hair strands, over-glossy skin, saturated palette, ornate accessories, full scenic background, cinematic lighting, fake paper texture, or over-clean AI polish>
 ```
 
-The handoff packet must be concrete. For example, say "very thin warm gray-brown low-opacity lineart with broken/lost contours around pale hair" instead of "soft linework"; say "long narrow face, high forehead, almond eyes one eye-width apart, small low mouth, narrow pointed chin" instead of "pretty face"; say "hard white dappled sunlight spots only, no aura or global bloom" instead of "glowy"; say "one or two tiny accessory cues maximum" instead of "simple accessories"; say "background should remain a faint wash with one soft cue" instead of "minimal background".
+The handoff packet must be concrete. For example, say "very thin warm gray-brown low-opacity lineart with broken/lost contours around pale hair" instead of "soft linework"; say "long narrow face, high forehead, almond eyes one eye-width apart, small low mouth, narrow pointed chin" instead of "pretty face"; say "hard white dappled sunlight spots only, no aura or global bloom" instead of "glowy"; say "one or two tiny accessory cues maximum" instead of "simple accessories"; say "background should remain a faint wash with one soft cue" instead of "minimal background". Mark a risk as conditional when it should only add prompt text for specific cases, such as one-eye occlusion, face marks near eyes, flawed hands, pale hair recolors, or dense background pressure.
 
 ## Trait Translation Matrix For Generation
 
