@@ -6,7 +6,7 @@ Use this reference when building prompts or judging output for `generate-charact
 
 1. 9:16 mobile portrait output and safe face/focal placement win for final canvas, orientation, and subject placement.
 2. A separate pose reference, when provided, wins for pose, camera, crop, silhouette, and hand placement only.
-3. Primary reference wins for facial expression, face proportion fingerprint, facial-feature construction, pose idea, camera feeling, hand logic, composition intent, lighting behavior, glow/specular profile, art style, linework fingerprint, visible medium/material behavior, eye rendering/coloring method, iris layering, catchlight shape, hair coloring method, hair construction, strand density, detail density, palette handling, background complexity, edge hierarchy, imperfection/polish level, and rendering complexity.
+3. Primary reference wins for facial expression, face proportion fingerprint, facial-feature construction, pose idea, camera feeling, hand logic, composition intent, lighting behavior, glow/specular profile, art style, linework fingerprint, visible medium/material behavior, eye rendering/coloring method, iris layering, catchlight shape, hair coloring method, hair construction, restrained strand density, detail density, palette handling, background complexity, edge hierarchy, imperfection/polish level, and rendering complexity.
 4. Character description wins for identity, appearance, outfit, accessories, species, local colors, visible marks, explicit makeup, and requested background content. Translate those traits through the reference visual grammar instead of replacing them with reference identity traits.
 5. Makeup follows the reference by default. Explicit character makeup is combined with the reference cosmetic rendering.
 6. Background content changes according to character/requested scene, but background style and complexity strictly follow the reference.
@@ -18,16 +18,16 @@ Use this matrix for every character and every reference. Do not hard-code a spec
 
 ```text
 Character-controlled traits:
-- Hair color, eye color, skin tone, outfit, accessories, species traits, visible marks/scars/tattoos, explicit makeup, and requested background content.
+- Hair color, eye color, skin tone, outfit, accessories, species traits, subtle visible marks/scars/tattoos, explicit makeup, and requested background content.
 
 Reference-controlled construction:
-- Pose, facial expression, face proportion fingerprint, facial-feature construction, camera/crop, gesture, hand logic, style family, visible medium/material behavior, linework fingerprint, shading method, glow/specular profile, eye rendering/coloring method, iris layering, catchlight shape, lash grouping, sclera tint, hair coloring method, hair construction, strand density, edge quality, imperfection/polish level, detail density, palette handling, background style, and rendering complexity.
+- Pose, facial expression, face proportion fingerprint, facial-feature construction, camera/crop, gesture, hand logic, style family, visible medium/material behavior, linework fingerprint, shading method, glow/specular profile, eye rendering/coloring method, iris layering, catchlight shape, lash grouping, sclera tint, hair coloring method, hair construction, restrained strand density, edge quality, imperfection/polish level, detail density, palette handling, background style, and rendering complexity.
 
 Compatibility rule:
-- Keep character traits, but draw them with the reference technique. Character eye color can change from the reference; iris layering, catchlight shape, lash grouping, sclera tint, and eye finish should not drift away from the reference. Character hair color can change from the reference; base color handling, strand count, clump grouping, highlight shape, edge breaks, and polish level should not drift away from the reference.
+- Keep character traits, but draw them with the reference technique. Character eye color can change from the reference; iris layering, catchlight shape, lash grouping, sclera tint, and eye finish should not drift away from the reference. Character hair color can change from the reference; base color handling, restrained strand count, clump grouping, highlight shape, edge breaks, and polish level should not drift away from the reference.
 ```
 
-Character local colors and accessories are not style drift by themselves. They become drift only when their saturation, detail density, construction, finish, or polish level breaks the reference visual grammar.
+Character local colors and accessories are not style drift by themselves. They become drift only when their saturation, detail density, construction, hair strand density, finish, or polish level breaks the reference visual grammar.
 
 ## Reference Analysis Card
 
@@ -125,13 +125,13 @@ Before writing the prompt, make a short contract:
 
 ```text
 Reference invariants:
-- <medium/material behavior, style family, face proportion fingerprint, facial-feature construction, linework, value range, edge hierarchy, render density, eye rendering/coloring method, hair coloring/construction, strand density, imperfection/polish level, glow/specular profile, lighting, background complexity>
+- <medium/material behavior, style family, face proportion fingerprint, facial-feature construction, linework, value range, edge hierarchy, render density, eye rendering/coloring method, hair coloring/construction, restrained strand density, imperfection/polish level, glow/specular profile, lighting, background complexity>
 
 Character trait locks:
 - <hair color, eye color, skin tone, outfit, accessories, species traits, visible marks, explicit makeup, requested background content>
 
 Reference construction locks:
-- <pose, expression, face proportion fingerprint, facial-feature construction, camera/crop, hand logic, linework, shading method, glow/specular behavior, eye rendering/coloring, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, strand density, edge quality, polish ceiling, background style>
+- <pose, expression, face proportion fingerprint, facial-feature construction, camera/crop, hand logic, linework, shading method, glow/specular behavior, eye rendering/coloring, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, restrained strand density, edge quality, polish ceiling, background style>
 
 Allowed character replacements:
 - <identity, hair/eye/skin/outfit/local colors translated into the reference style>
@@ -150,7 +150,7 @@ Required guards:
 
 - **Face proportion fingerprint**: head shape, face length/width, forehead/eye/nose/mouth/chin spacing, eye size/spacing/tilt, brow/nose/mouth construction, jaw/chin/cheek shape, and feature simplification.
 - **Linework fingerprint**: line color/tint, thickness range, opacity, taper/pressure rhythm, broken/lost contour behavior, line density, contour authority, line-to-fill relationship.
-- **Hair construction**: mass-first or strand-first strategy, strand density, clump scale, highlight shape, edge behavior, and whether extra strands are forbidden.
+- **Hair construction**: mass-first or strand-first strategy, restrained strand density, clump scale, highlight shape, edge behavior, and whether extra strands are forbidden.
 - **Polish ceiling**: whether the output must preserve roughness, line wobble, uneven fill, loose edges, imperfect gradients, scanned texture, or restrained digital polish.
 - **Glow/specular profile**: which highlights are true glow/bloom/aura versus hard specular highlights, dappled light, rim light, color-dodge-like accents, or bokeh; maximum magic/sparkle/glow count.
 - **Eye rendering/coloring**: eye color fidelity plus iris layering, catchlight shape, lash grouping, sclera tint, eyelid redness, and gloss/matte finish.
@@ -220,8 +220,8 @@ If the reference is ornate, detailed, full-scene, or high-accessory, more charac
 Use these compression rules:
 
 - Eyes: preserve the character's eye color, but match the reference eye coloring method. Use the same iris layering, upper-iris shadow, lower-iris glow or flat fill, pupil treatment, rim line, catchlight shape, sclera tint, lash grouping, eyelid redness, tear/glitter accents, and eye gloss/matte finish.
-- Hair: preserve the character's hair color, but match the reference hair construction first. If the reference uses negative-space or mass-first hair with sparse strand lines, draw the new hair as broad masses with the character local color controlled by the reference value/chroma system; do not render every strand, add glossy perfect gradients, or turn the whole image into a saturated color wash.
-- Hair coloring: translate the character hair color through the reference's base-mass fill, shadow hue, highlight shape, line tint, opacity, edge looseness, and value range. The color should read as the character's hair color, but the coloring method should read as the reference.
+- Hair: preserve the character's hair color, but match the reference hair construction first. If the reference uses negative-space or mass-first hair with sparse strand lines, draw the new hair as broad masses with the character local color controlled by the reference value/chroma system; do not render every strand, add glossy perfect gradients, turn the hair into thin string-like locks, or turn the whole image into a saturated color wash. When in doubt, reduce strand count and simplify into larger clumps instead of adding fine hair-line detail.
+- Hair coloring: translate the character hair color through the reference's base-mass fill, shadow hue, highlight shape, line tint, opacity, edge looseness, and value range. The color should read as the character's hair color, but the coloring method should read as the reference. Do not use more individual strands, flyaways, glossy separators, or perfectly regular hair ribbons than the reference.
 - Outfit: match the reference fabric detail level. If the reference sleeve is broad, pale, and simply shaded, do not add dense cable-knit, lace, jewelry chains, or full outfit detail.
 - Accessories: if the character has accessories, include readable style-matched cues when the crop and detail budget allow. If the reference has few or no accessories, allow one or two small accents and treat the rest as hidden, cropped, or simplified; do not render accessory precision beyond the reference polish ceiling.
 - Background: if the reference background is plain or abstract, use one faint scene cue only. Do not draw a full city, room, balcony, fairy lights, props, or hanging decorations.
@@ -308,7 +308,7 @@ Match:
 - Face proportion fingerprint: head shape, face length/width, feature spacing, eye size/spacing/tilt, nose/mouth placement, jaw/chin/cheek construction, and feature simplification.
 - Linework fingerprint: line color/tint, thickness range, opacity, taper/pressure rhythm, broken/lost contour behavior, line density, contour authority, focal line hierarchy, and line-to-fill relationship.
 - Face simplification, eye rendering/coloring, iris layering, catchlight shape, lash grouping, nose/mouth treatment.
-- Hair coloring method, hair shape language, strand density, highlight blocks.
+- Hair coloring method, hair shape language, restrained strand density, highlight blocks.
 - Skin shading, blush, shadow hue, highlight type.
 - Clothing fold simplification and material finish.
 - Accessory/detail rendering scale and simplification.
@@ -429,24 +429,25 @@ Keep the main subject's face/focal center comfortably inside the frame, not too 
 
 Use the attached image as the primary visual reference.
 Make the result feel like the reference image was redrawn with a different character identity.
-Strictly match the reference pose idea, facial expression, gaze direction, head angle, camera feeling, hand placement, hand visibility/crop, composition intent, face proportion fingerprint, facial-feature construction, linework fingerprint, face simplification, eye rendering/coloring method, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, strand density, skin shading, clothing shading, makeup/cosmetic rendering, lighting direction, glow/specular profile, shadow softness, highlight placement, contrast, background rendering treatment, and overall finish.
+Strictly match the reference pose idea, facial expression, gaze direction, head angle, camera feeling, hand placement, hand visibility/crop, composition intent, face proportion fingerprint, facial-feature construction, linework fingerprint, face simplification, eye rendering/coloring method, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, restrained strand density, skin shading, clothing shading, makeup/cosmetic rendering, lighting direction, glow/specular profile, shadow softness, highlight placement, contrast, background rendering treatment, and overall finish.
 
 Reference visual grammar:
 <detailed Generation Handoff Packet fields from analyze-art-drawing; include concrete face proportion, facial-feature construction, linework, eye, hair, medium, palette, glow/specular, detail-density, accessory, background, pose/hand/crop, and polish locks>
 
 Compressed character trait locks:
-Preserve the new character's visible traits after the hard compression gate: <face/skin, hair color, eye color, visible marks/species traits, one or more outfit/accessory/background cues only within the packet's visual budget>. Do not replace these with the reference character's identity traits. Do not paste the raw character sheet or full accessory/background inventory here.
+Preserve the new character's visible traits after the hard compression gate: <face/skin, hair color, eye color, subtle visible marks/species traits, one or more outfit/accessory/background cues only within the packet's visual budget>. Do not replace these with the reference character's identity traits. Do not paste the raw character sheet or full accessory/background inventory here. Face marks are allowed when they fit the character description or identity cue; if included, render them tiny, low-contrast, and integrated with the reference face line tint, shading softness, edge roughness, value range, and medium behavior. Unless the prompt explicitly says the mark is raised, embossed, painted, metallic, glowing, inked, or attached, treat it as flat pigment under/within the skin, flush with the face surface, with no raised edge, cast shadow, sticker outline, or separate material highlight.
 
 Reference construction locks:
-Draw those character traits using the reference construction: <pose, expression, face proportion fingerprint, facial-feature construction, camera/crop, hand logic, linework fingerprint, shading method, glow/specular behavior, eye rendering/coloring, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, strand density, edge quality, accessory/detail rendering, background style>. Eye color follows the character; iris layering, catchlight shape, lash grouping, sclera tint, eyelid redness, and eye finish follow the reference. Hair color follows the character; hair base-fill method, shadow hue behavior, strand density, clump grouping, highlight shape, edge behavior, and polish level follow the reference.
+Draw those character traits using the reference construction: <pose, expression, face proportion fingerprint, facial-feature construction, camera/crop, hand logic, linework fingerprint, shading method, glow/specular behavior, eye rendering/coloring, iris layering, catchlight shape, lash grouping, hair coloring method, hair construction, restrained strand density, edge quality, accessory/detail rendering, background style>. Eye color follows the character; iris layering, catchlight shape, lash grouping, sclera tint, eyelid redness, and eye finish follow the reference. Hair color follows the character; hair base-fill method, shadow hue behavior, restrained strand density, clump grouping, highlight shape, edge behavior, and polish level follow the reference.
 
 Known failure guards:
 - Linework guard: <specific line color/tint, thickness range, opacity, taper rhythm, broken/lost contour behavior, line density, contour authority, line-to-fill relationship>. Avoid <specific linework drift such as black outlines, crisp vector curves, dense interior line detail, heavy contour authority>.
 - Face proportion guard: <specific head/face shape, face length/width, eye size/spacing/tilt, brow/nose/mouth placement, jaw/chin/cheek construction, feature simplification>. Avoid <generic anime face, rounder/chibi face, doll face, photoreal facial planes, wrong age impression, or shifted feature spacing>.
-- Hair guard: <specific mass/strand strategy, allowed strand density, clump scale, highlight shape, edge behavior>. Avoid <extra strands, glossy perfect gradients, over-polished hair volume, wrong construction>.
+- Hair guard: <specific mass/clump strategy, allowed strand density, clump scale, highlight shape, edge behavior>. Avoid <strand-by-strand rendering, dense flyaway fields, glossy string hair, many extra fine hair lines, glossy perfect gradients, over-polished hair volume, wrong construction>.
 - Polish guard: <specific imperfection/polish ceiling>. Avoid <cleaner/smoother/glossier/more detailed output than reference>.
 - Glow/specular guard: <specific allowed hard highlights, dappled light, bokeh, rim light, or local glow count>. Avoid <global glow, bloom haze, magic aura, sparkle fields, neon rim light, over-glossy plastic skin, or glowy mobile-game polish if not present in the reference>.
 - Eye guard: <specific iris/catchlight/lash/sclera strategy>. Avoid <extra iris complexity, wrong catchlights, over-glossy eyes>.
+- Face-mark guard: <include or omit face mark based on character fit and reference visual budget; if included, render it as a tiny, low-contrast, source-style-integrated birthmark/scar/tint, flat pigment under/within the skin unless explicitly described as raised/painted/inked/attached>. Avoid <sticker-like symbols, crisp emblem geometry, glowing runes, high-contrast under-eye icons, floating marks, mismatched tattoo linework, raised edges, cast shadows, sticker outlines, or separate-material face marks>.
 - Detail/background/accessory guard: <specific visual budget>. Avoid <ornate accessories, busy background, extra props, full outfit exposition when the reference does not support it>.
 - Character-sheet pressure guard: <concrete caps from the compression gate, such as one outfit cue, one or two accessory cues, one faint background cue, tiny local glow only>. Avoid <raw character-sheet inventories, full scene, prop clusters, dense motifs, unbounded sparkle/glow>.
 
@@ -457,7 +458,7 @@ Imperfection/polish ceiling:
 Do not make the result cleaner, smoother, glossier, more detailed, or more AI-polished than the reference. Preserve the reference's natural imperfections or clean finish: <line wobble, uneven fill, loose edge, rough gradient, scanned/paper artifact, digital brush/layer behavior, or other finish cues>.
 
 Style fidelity contract:
-Preserve the reference detail density, palette handling, edge hierarchy, eye rendering/coloring, hair coloring/construction, strand density, accessory/detail rendering, background complexity, and rendering complexity.
+Preserve the reference detail density, palette handling, edge hierarchy, eye rendering/coloring, hair coloring/construction, restrained strand density, accessory/detail rendering, background complexity, and rendering complexity.
 Translate character details into that visual budget. If a character detail would make the image more ornate, more colorful, more cinematic, more accessory-heavy, more background-heavy, or more polished than the reference, simplify it to a style-matched cue instead of changing the core character trait.
 
 Lighting lock:
@@ -501,8 +502,9 @@ Avoid:
 - Losing or changing character hair color, eye color, outfit colors, skin tone, visible marks, or signature accessories without an explicit reason.
 - Linework drift: wrong line color/tint, too-black outlines, too-thick contours, uniform vector-like strokes, too-clean taper, too many interior lines, missing broken/lost contours, or stronger contour authority than the reference.
 - Eye color rendered with the wrong reference method: different iris layering, wrong catchlight shape, too much iris detail, different lash grouping, wrong sclera tint, or more glossy/perfect eye rendering than the reference.
+- Face mark rendered as a detached sticker, crisp icon, high-contrast emblem, glowing rune, raised/cast-shadowed decal, separate-material mark, or mismatched tattoo instead of matching the reference face rendering.
 - Over-rendered hair when the reference uses simple hair masses.
-- Hair color rendered with the wrong reference method: many more strands, cleaner gradients, glossier highlights, different shadow/highlight shape language, or more perfect clump geometry than the reference.
+- Hair color rendered with the wrong reference method: many more strands, strand-by-strand rendering, dense flyaway fields, glossy string hair, cleaner gradients, glossier highlights, different shadow/highlight shape language, or more perfect clump geometry than the reference.
 - New dominant palette that overpowers the reference palette.
 - Saturated character colors rendered as a new global palette system instead of reference-style local colors.
 - Omitting all character accessories when the crop and detail budget can support small style-matched cues.
@@ -523,7 +525,7 @@ Prefer:
 - Same visible medium/material behavior and surface finish.
 - Same detected style family, linework fingerprint, rendering, lighting, background style, and finish.
 - Same glow/specular behavior: preserve only the reference's highlight type and glow budget.
-- Same reference detail density, palette handling, background complexity, accessory/detail rendering, eye rendering/coloring, hair coloring/construction, strand density, and polish ceiling.
+- Same reference detail density, palette handling, background complexity, accessory/detail rendering, eye rendering/coloring, hair coloring/construction, restrained strand density, and polish ceiling.
 - Compact character appearance replacement.
 - Simple, style-consistent background content.
 
@@ -574,7 +576,7 @@ No watermark/signature/text: pass/fail
 Minimum acceptable result:
 
 - Style, pose idea, facial expression, character identity, lighting, and background style are 4 or higher.
-- Detected style family, pose-source compliance, face proportion fingerprint match, facial-feature construction match, linework fingerprint match, line color/tint match, line thickness/opacity match, broken/lost contour match, line density/contour authority match, character local color fidelity, eye color fidelity, eye rendering/coloring strategy match, hair color fidelity, hair coloring/construction match, strand-density match, medium/material match, glow/specular profile match, detail-density match, palette handling match, background complexity match, accessory/detail rendering compliance, polish ceiling match, character-sheet pressure controlled, 9:16 mobile portrait output, safe placement, makeup rule, background content source, crop safety, and no watermark/signature/text all pass.
+- Detected style family, pose-source compliance, face proportion fingerprint match, facial-feature construction match, linework fingerprint match, line color/tint match, line thickness/opacity match, broken/lost contour match, line density/contour authority match, character local color fidelity, eye color fidelity, eye rendering/coloring strategy match, hair color fidelity, hair coloring/construction match, strand-density match with no extra fine hair-line noise, medium/material match, glow/specular profile match, detail-density match, palette handling match, background complexity match, accessory/detail rendering compliance, polish ceiling match, character-sheet pressure controlled, 9:16 mobile portrait output, safe placement, makeup rule, background content source, crop safety, and no watermark/signature/text all pass.
 - Hands/anatomy pass when hands are visible.
 
 ## One-Reroll Rule
@@ -596,7 +598,7 @@ Hard QC failures:
 - Medium/material behavior drifted away from the reference.
 - Linework fingerprint drifted away from the reference.
 - Character local colors, eye color, hair color, or signature accessories drifted away from the character description.
-- Eye rendering/coloring, hair coloring/construction, strand density, glow/specular behavior, detail density, palette handling, background complexity, accessory/detail rendering, polish ceiling, or character-sheet pressure control failed.
+- Eye rendering/coloring, face mark integration, hair coloring/construction, strand density or extra hair-line noise, glow/specular behavior, detail density, palette handling, background complexity, accessory/detail rendering, polish ceiling, or character-sheet pressure control failed.
 - Lighting strongly mismatches reference.
 - Hands/anatomy/crop fails.
 - Watermark, signature, text, extra character, or copied reference outfit/hair/color appears.
@@ -652,7 +654,7 @@ Accessory/prop pressure failure:
 Show at most one or two small character accents if the reference is low-accessory. Hide, crop, or omit the rest. Do not add chains, gems, decorative charms, full outfit details, or prop clusters unless the reference has similar accessory density.
 
 Hair strategy failure:
-Preserve the character's hair color, but match the reference hair coloring and construction. If the reference uses large hair masses with sparse strand lines and lost edges, keep that strategy; use the same base-fill method, shadow hue behavior, highlight shape, line tint, edge looseness, strand density, and polish level. Avoid dense strand rendering, saturated global wash, cleaner gradients, and over-polished hair volume.
+Preserve the character's hair color, but match the reference hair coloring and construction. If the reference uses large hair masses with sparse strand lines and lost edges, keep that strategy; use the same base-fill method, shadow hue behavior, highlight shape, line tint, edge looseness, restrained strand density, and polish level. Avoid dense strand rendering, strand-by-strand detail, excessive flyaways, glossy string hair, many extra fine hair lines, saturated global wash, cleaner gradients, and over-polished hair volume.
 
 Polish ceiling failure:
 Do not make the image cleaner, smoother, glossier, more symmetrical, more detailed, or more AI-polished than the reference. Restore the reference finish cues such as line wobble, uneven fill, loose edges, rough gradients, scanned/paper artifacts, or restrained digital brush/layer behavior.

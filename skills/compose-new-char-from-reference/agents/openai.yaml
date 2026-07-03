@@ -1,0 +1,4 @@
+interface:
+  display_name: "New Character Composer"
+  short_description: "Compose original Mero character JSON"
+  default_prompt: "Use $compose-new-char-from-reference with this pasted character reference. Compose a new original character, return valid Mero character JSON first, then a Mobile portrait mode IMAGE_RECAST_HANDOFF and COMPOSITION_DIFF_SUMMARY. Do not invent face scars/marks/tattoos/birthmarks unless I explicitly request them. Idea/hint: "
