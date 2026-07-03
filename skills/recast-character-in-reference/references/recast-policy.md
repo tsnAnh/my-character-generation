@@ -48,6 +48,13 @@ Edit target locks:
 - Background/decor rendering method:
 - Polish ceiling:
 
+First-pass failure-prevention ledger:
+- Predictable prompt-pressure risks:
+- Required positive source-budget guards:
+- Required negative constraints:
+- Highest likely basic-defect risks:
+- Correction priority if generation still fails:
+
 Replace from character prompt:
 - Hair:
 - Eyes:
@@ -74,6 +81,27 @@ Omit:
 ```
 
 The final edit prompt should use the map, not the raw character sheet.
+
+## First-Pass Failure Prevention
+
+Do not rely on a later correction pass to fix drift that can be predicted before the first generation. The first prompt must contain explicit guards for foreseeable failures from both the source and the character prompt.
+
+Build a short prevention ledger before prompting:
+
+- source style/polish risk: how the model may clean, smooth, gloss, simplify, intensify, or over-render the source
+- character prompt pressure: words that invite a style or detail upgrade, such as royal, luxurious, cinematic, ornate, magic, armor, jewelry, lace, long hair, silver/pastel hair, detailed room, architecture, weather, reflective props, atmospheric lighting, or any dense prop inventory
+- anatomy risk: eyes/pupils, occluded facial features, hands/fingers, cropped limbs, body twist, accessory lines that can read as anatomy
+- placement risk: mobile header safety, face too high/low, key marks or accessories under UI
+- inventory risk: outfit, accessories, background, props, glow, and magic exceeding the source detail budget
+
+For every predictable risk, put a positive source-budget guard in the first prompt, then mirror it in negative constraints. Examples:
+
+- "Keep the source's rough grainy polish ceiling; do not make the result cleaner, smoother, glossier, more ornate, or more fantasy-polished."
+- "Compress royal/luxury cues into one or two visible accessories only; do not add dense jewelry, brocade, chains, armor, or full costume inventory."
+- "Compress the requested room into one or two background cues in the source's rendering style; no full scenic interior or prop cluster."
+- "If hair, fabric, props, shadow, or background strokes cross a facial feature, hand, limb, or body contour, keep the underlying anatomy plausible and naturally occluded; do not let those marks read as duplicated features, melted anatomy, or extra body parts."
+
+If a predictable style/detail/glow/background/hair-noise failure appears because the first prompt did not guard it, treat that as a prompt-construction failure. Fix the prompt/skill guard for the next attempt instead of spending the only correction pass on broad cleanup while a central basic defect remains.
 
 ## Mobile Portrait Mode And App-Safe Focal Placement
 
@@ -371,6 +399,8 @@ Style-family / rendering-model lock: <specific visible art family, medium behavi
 
 Source-look priority: <specific visible style evidence: line tint/weight, broken or clean contours, fill/shadow method, edge behavior, texture/grain, background rendering, lighting/value range, and imperfect or clean polish ceiling>. Preserve this art method across the character and any extended background.
 
+First-pass drift guards: <short source-budget caps for predictable prompt-pressure risks: polish/style upgrade, over-ornamented outfit, full scenic background, glow/magic bloom, hair strand/noise drift, occluded eyes/facial features, hands/cropped anatomy, app framing, and accessory/background marks that can read as anatomy. State these guards before local trait replacements.>
+
 Make only these visible replacements:
 - <hair replacement>
 - <eye replacement>
@@ -415,6 +445,17 @@ Treat these as hard reroll or correction blockers even if the source style looks
 - severe overpolish, style conversion, or detail noise that hides anatomy or makes the image read as AI-generated
 
 Do not finalize an output just because it matches the reference art style, pose, or palette. If a basic defect is central, obvious, or on any visible body part, mark the QC as fail and use one correction or reroll when available.
+
+Use this priority order when deciding how to spend a single correction/reroll:
+
+1. P0 basic visual defects: broken eyes/pupils, duplicated or melted facial parts, warped face/nose/mouth, broken neck/shoulder/torso, malformed hands/fingers, extra/missing limbs, anatomy-like accessory/background artifacts, text/watermark, severe artifact debris, and unsafe mobile face placement.
+2. P1 structure and identity locks: wrong pose/crop/camera, wrong face construction, wrong expression/gaze, wrong required hair/eye/skin/outfit/mark/accessory trait, or missing required app framing.
+3. P2 source-rendering locks: wrong style family/medium, severe polish upgrade or flattening, loss of linework/lighting/form modeling, hair construction drift, or global glow drift.
+4. P3 inventory/detail budget: ornate costume, accessory clutter, background clutter, prop overload, or noncentral hair/detail noise that does not create a basic defect.
+
+If a P0 defect is central and the rest of the image is usable, correct the P0 defect first with a narrow local prompt. Do not spend the only correction pass on P2/P3 polish, hair, outfit, or background cleanup while a central eye, face, hand, body, placement, text, or artifact defect remains.
+
+If the output has both a central P0 defect and a severe global P2 style-family/polish conversion, reroll with strengthened first-pass locks rather than doing a local style cleanup. If the P2/P3 failure was predictable from the prompt, strengthen the first-pass prevention ledger before rerolling.
 
 Use a targeted correction when the rest of the image passes and the failure is local:
 
